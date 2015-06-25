@@ -2,14 +2,16 @@ package com.gcit.lbms.views;
 
 import java.util.ArrayList;
 
+import com.gcit.lbms.model.Library;
+
 public class MenuView {
 
-	public void printLibraries(ArrayList<String> list)
+	public void printLibraries(ArrayList<Library> list)
 	{
 		int i=1;
-		for (String s : list)
+		for (Library l : list)
 		{
-			System.out.println(i+") " +s);
+			System.out.println(i+") " + l.getName());
 			i++;
 		}
 		System.out.println(i+") Quit to previous" );

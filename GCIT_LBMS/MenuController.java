@@ -85,8 +85,9 @@ public class MenuController {
 		switch (c)
 		{
 		case 1:
-			
+			//update the details
 			break;
+			
 		default:
 			break;
 		}
@@ -106,45 +107,32 @@ public class MenuController {
 
 	public void takeInput(Scanner sc)
 	{
+		
+		
 		//select the input depending on the current state of the controller
+		
+		// THIS SWITCH IS FOR OPTIONS THAT NEED INTEGERS
+		try{
+			int c= sc.nextInt();
+		}
+		catch (Exception e)
+		{
+			
+		}
 		switch (screen)
 		{
 		//first menu
 		case 0:
-			try {
-				int c = sc.nextInt();
-				selectUser(c);
-			} catch (Exception e) {
-				// TODO: handle exception
-			}
+			selectUser(c);
 			break;
 		case 1:
-			try{
-				int c = sc.nextInt();
-				screen1(c);
-			}
-			catch(Exception e)
-			{
-
-			}
-
+			screen1(c);
 			break;
 		case 2:
-			try {
-				int c = sc.nextInt();
-				screen2(c);
-			} catch (Exception e) {
-				// TODO: handle exception
-			}
+			screen2(c);
 			break;
-
 		case 3:
-			try{
-
-			}catch (Exception e)
-			{
-
-			}
+			screen3(c);
 		default:
 			break;
 		}
