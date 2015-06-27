@@ -2,6 +2,7 @@ package com.gcit.lbms.model;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -38,6 +39,12 @@ public class dbConnection {
 		}
 	}
 	
+
+	public Connection getConnection()
+	{
+		checkConnection();
+		return conn;
+	}
 	private void checkConnection()
 	{
 		try {
@@ -49,12 +56,11 @@ public class dbConnection {
 		}
 	}
 	
-	public ResultSet executeQuery(String Query)
+	public ResultSet executeQuery(PreparedStatement pstmt)
 	{
 		checkConnection();
 		try {
-			Statement stmt = conn.createStatement();
-			ResultSet rs = stmt.executeQuery(Query);
+			ResultSet rs = pstmt.executeQuery();
 			return rs;
 		} catch (SQLException e) {
 			debugError(e);
@@ -72,12 +78,11 @@ public class dbConnection {
 		}
 	}
 	
-	public void executeUpdate(String Query)
+	public void executeUpdate(PreparedStatement pstmt)
 	{
 		checkConnection();
 		try {
-			Statement stmt = conn.createStatement();
-			stmt.executeUpdate(Query);
+			pstmt.executeUpdate();
 			conn.close();
 		} catch (SQLException e) {
 			debugError(e);

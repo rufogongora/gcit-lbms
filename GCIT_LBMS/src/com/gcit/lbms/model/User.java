@@ -1,5 +1,6 @@
 package com.gcit.lbms.model;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -8,20 +9,9 @@ public abstract class User {
 	protected int level;
 	private int currentLibraryId;
 	private static dbConnection conn;
-	
-	public void setLibrary(int id)
-	{
-		try{
-		String query = "SELECT id FROM tbl_library_branch WHERE id = " +id;
-		ResultSet rs = conn.executeQuery(query);
-		level = rs.getInt("branchId");
-		}
-		catch(SQLException e) 
-		{
-			conn.debugError(e);
-		}
-	}
-	
+	Library selectedLibrary;
+	Book selectedBook;
+
 	public void setCurrentLibrary(int i)
 	{
 		currentLibraryId = i;
@@ -33,8 +23,10 @@ public abstract class User {
 	public static Borrower getBorrower(int cardId)
 	{
 		try {
-			String query = "SELECT * FROM tbl_borrower WHERE id = " + cardId ;
-			ResultSet rs = conn.executeQuery(query);
+			String query = "SELECT * FROM tbl_borrower WHERE id = ?";
+			PreparedStatement pstmt = conn.getConnection().prepareStatement(query);
+			pstmt.setInt(1, cardId);
+			ResultSet rs = conn.executeQuery(pstmt);
 			//THIS MEANS THERE'S NO RESULT
 			if (!rs.next())
 			{
@@ -50,6 +42,26 @@ public abstract class User {
 			// TODO: handle exception
 		}
 		return null;
+	}
+	
+	public Library getSelectedLibrary()
+	{
+		return selectedLibrary;
+	}
+	
+	public void setSelectedBook(Book b)
+	{
+		this.selectedBook = b;
+	}
+	
+	public Book getSelectedBook()
+	{
+		return this.selectedBook;
+	}
+	
+	public void setSelectedLibrary(Library l)
+	{
+		selectedLibrary = l;
 	}
 	
 	 

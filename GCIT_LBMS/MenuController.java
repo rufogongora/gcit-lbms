@@ -1,6 +1,7 @@
 package com.gcit.lbms.controller;
 
 import java.io.IOException;
+import java.lang.Character.Subset;
 import java.util.Scanner;
 
 import com.gcit.lbms.model.Administrator;
@@ -16,12 +17,14 @@ public class MenuController {
 	private Menu model;
 	private User user;
 	int screen;
+	int subscreen;
 
 	public MenuController(Menu m, MenuView v)
 	{
 		model = m;
 		view = v;
 		screen = 0;
+		subscreen = 0;
 	}
 
 	public void setUser(User u)
@@ -101,7 +104,7 @@ public class MenuController {
 	 * 1 = ENTER THE BRANCH YOU MANAGE (lib1)
 	 * 2 = DISPLAY THE LIBRARIES (lib2)
 	 * 3 = DISPLAY INDIVIDUAL LIBRARY MENU (lib3)
-	 * 4 = INSERT CARD NUMBER FOR USER
+	 * 4 = ENTER NEW BRANCH NAME(LIB3, OPTION 1)
 	 * 
 	 */
 
@@ -110,36 +113,75 @@ public class MenuController {
 		
 		
 		//select the input depending on the current state of the controller
-		
-		// THIS SWITCH IS FOR OPTIONS THAT NEED INTEGERS
-		try{
-			int c= sc.nextInt();
-		}
-		catch (Exception e)
+		if (screen == 0 || screen == 1 || screen == 2 )
 		{
+			try{
+				int c = sc.nextInt();
+			}
+			catch (Exception e)
+			{
+				
+			}
+			// THIS SWITCH IS FOR OPTIONS THAT NEED INTEGERS
+			switch (screen)
+			{
+			//first menu
+			case 0:
+				selectUser(c);
+				break;
+			case 1:
+				screen1(c);
+				break;
+			case 2:
+				screen2(c);
+				break;
+			default:
+				break;
+			}
+		}
+		else
+		{
+			//this is for options that need strings
+			try{
+				String s = sc.nextLine();
+			}catch(Exception e){
+				
+			}
+			switch(screen)
+			{
+			case 3:
+				takeInputSubscreen1(s);
+				break;
+			}
 			
 		}
-		switch (screen)
-		{
-		//first menu
-		case 0:
-			selectUser(c);
-			break;
-		case 1:
-			screen1(c);
-			break;
-		case 2:
-			screen2(c);
-			break;
-		case 3:
-			screen3(c);
-		default:
-			break;
-		}
+
+	//	switch (screen)
 		//sc.close();
 
 	}
 
+	public void takeInputSubscreen1(String s)
+	{
+		switch (subscreen) {
+		case 0:
+			
+			break;
+		case 1:
+			
+			break;
+		default:
+			break;
+		}
+	}
+	pubic void updateLibMenu()
+	{
+		switch (subscreen)
+		{
+			
+		}
+	}
+	
 	public void updateView()
 	{
 		switch (screen) {
@@ -155,8 +197,10 @@ public class MenuController {
 		case 3:
 			view.libraryMenu();
 			break;
-
-
+		case 4:
+			updateLibMenu();
+			break;
+			
 		default:
 			break;
 		}
