@@ -7,6 +7,7 @@ import java.util.Scanner;
 
 import com.gcit.lbms.model.Administrator;
 import com.gcit.lbms.model.Book;
+import com.gcit.lbms.model.Bookloan;
 import com.gcit.lbms.model.Borrower;
 import com.gcit.lbms.model.Librarian;
 import com.gcit.lbms.model.Library;
@@ -442,7 +443,7 @@ public class MenuController {
 	public void screen28(String c, Scanner sc)
 	{
 		ArrayList<Borrower> listOfBorrowers = Borrower.getListOfBorrowers(model.getConnection());
-		int n = sc.nextInt();
+		int n = Integer.parseInt(c);
 		n-=1;
 		if (n < listOfBorrowers.size() && n>= 0)
 		{
@@ -471,9 +472,16 @@ public class MenuController {
 		screen = 13;
 	}
 	
-	public void screen28(String c)
+	public void screen30(String c)
 	{
-		
+		ArrayList<Bookloan> list = Bookloan.getBookLoans(model.getConnection());
+		int n = Integer.parseInt(c);
+		n-=1;
+		if (n < list.size() && n >= 0)
+		{
+			list.get(n).addOneWeek(model.getConnection());
+		}
+		screen = 13;
 	}
 	
 	/* SCREEN INFORMATION:
@@ -592,9 +600,14 @@ public class MenuController {
 			case 27:
 				screen27(c, sc);
 				break;	
-				
 			case 28:
 				screen28(c,sc);
+				break;
+			case 29:
+				screen29(c);
+				break;
+			case 30:
+				screen30(c);
 				break;
 			default:
 				break;
@@ -702,6 +715,9 @@ public class MenuController {
 			break;
 		case 29:
 			view.deleteBorrower(Borrower.getListOfBorrowers(model.getConnection()));
+			break;
+		case 30:
+			view.OverrideLoan(Bookloan.getBookLoans(model.getConnection()));
 			break;
 		default:
 			break;

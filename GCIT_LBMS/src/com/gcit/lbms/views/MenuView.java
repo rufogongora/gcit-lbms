@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import com.gcit.lbms.model.Book;
+import com.gcit.lbms.model.Bookloan;
 import com.gcit.lbms.model.Borrower;
 import com.gcit.lbms.model.Library;
 import com.gcit.lbms.model.Publisher;
@@ -244,5 +245,24 @@ public class MenuView {
 		// TODO Auto-generated method stub
 		System.out.println("Please select the borrower you want to delete: ");
 		printBorrowers(listOfBorrowers);
+	}
+
+
+	public void OverrideLoan(ArrayList<Bookloan> bookLoans) {
+		// TODO Auto-generated method stub
+		System.out.println("Please select which book loan you want to add 1 week: ");
+		printLoans(bookLoans);
+		
+	}
+	
+	public void printLoans(ArrayList<Bookloan> bookLoans)
+	{
+		int i = 1;
+		for(Bookloan b : bookLoans)
+		{
+			System.out.println(i + ") Borrower: " + b.getBorrowerName() + " - Book: " + b.getBookTitle() + " - Date out: " + b.getDateOut().toString() + " - Due Date: " + b.getDueDate().toString());
+			i++;
+		}
+		System.out.println(i+ ") Return to previous");
 	}
 }
