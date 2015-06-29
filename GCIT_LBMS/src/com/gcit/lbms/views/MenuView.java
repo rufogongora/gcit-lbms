@@ -1,7 +1,6 @@
 package com.gcit.lbms.views;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import com.gcit.lbms.model.Book;
 import com.gcit.lbms.model.Bookloan;

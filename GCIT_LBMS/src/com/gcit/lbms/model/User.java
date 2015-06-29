@@ -1,15 +1,10 @@
 package com.gcit.lbms.model;
 
 import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 public abstract class User {
 
 	protected int level;
 	private int currentLibraryId;
-	private static dbConnection conn;
 	Library selectedLibrary;
 	Book selectedBook;
 

@@ -1,7 +1,6 @@
 package com.gcit.lbms.controller;
 
-import java.io.IOException;
-import java.lang.Character.Subset;
+
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -14,7 +13,6 @@ import com.gcit.lbms.model.Library;
 import com.gcit.lbms.model.Menu;
 import com.gcit.lbms.model.Publisher;
 import com.gcit.lbms.model.User;
-import com.gcit.lbms.model.dbConnection;
 import com.gcit.lbms.views.MenuView;
 
 public class MenuController {

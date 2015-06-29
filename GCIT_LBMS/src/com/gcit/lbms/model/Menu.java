@@ -1,6 +1,6 @@
 package com.gcit.lbms.model;
 
-import java.sql.ResultSet;
+
 import java.util.ArrayList;
 
 public class Menu {
