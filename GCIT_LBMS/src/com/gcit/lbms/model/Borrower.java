@@ -25,6 +25,7 @@ public class Borrower extends User {
 	{
 		return name;
 	}
+
 	public static Borrower findBorrower(int cardNo, dbConnection conn)
 	{
 		try{

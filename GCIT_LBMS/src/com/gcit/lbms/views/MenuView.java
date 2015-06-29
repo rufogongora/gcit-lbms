@@ -238,4 +238,11 @@ public class MenuView {
 		printBorrowers(listOfBorrowers);
 		
 	}
+
+
+	public void deleteBorrower(ArrayList<Borrower> listOfBorrowers) {
+		// TODO Auto-generated method stub
+		System.out.println("Please select the borrower you want to delete: ");
+		printBorrowers(listOfBorrowers);
+	}
 }

@@ -263,6 +263,9 @@ public class MenuController {
 		case "4":
 			screen = 26;
 		break;
+		case "5":
+			screen = 30;
+			break;
 		default:
 			screen = 0;
 			break;
@@ -408,6 +411,7 @@ public class MenuController {
 			
 			user.updateLibraryBranch(name, address, listOfLibraries.get(n).getBranchId(), model.getConnection());
 		}
+		screen = 13;
 	}
 	public void screen25(String c)
 	{
@@ -419,11 +423,57 @@ public class MenuController {
 		{
 			user.deleteLibraryBranch(listOfLibraries.get(n).getBranchId(), model.getConnection());
 		}
+		screen = 13;
 	}
 	
 	public void screen27(String c, Scanner sc)
 	{
-		System.out.println("");
+		System.out.println("Please input the address for your new borrower: ");
+		String address = sc.nextLine();
+		System.out.println("Please input the phone for the new borrower: ");
+		String phone = sc.nextLine();
+		user.addBorrower(c, address, phone, model.getConnection());
+		screen = 13;
+		
+	}
+	
+	
+	//update 
+	public void screen28(String c, Scanner sc)
+	{
+		ArrayList<Borrower> listOfBorrowers = Borrower.getListOfBorrowers(model.getConnection());
+		int n = sc.nextInt();
+		n-=1;
+		if (n < listOfBorrowers.size() && n>= 0)
+		{
+			System.out.println("Please input the new name of the borrower: ");
+			String name = sc.nextLine();
+			
+			System.out.println("Please input the new phone of the borrower: ");
+			String phone = sc.nextLine();
+			
+			System.out.println("Please input the address of the borrower: ");
+			String address = sc.nextLine();
+			
+			user.updateBorrower(name, address, phone, listOfBorrowers.get(n).getCardNo(), model.getConnection());
+		}
+		screen = 13;
+	}
+	public void screen29(String c)
+	{
+		ArrayList<Borrower> listOfBorrowers = Borrower.getListOfBorrowers(model.getConnection());
+		int n = Integer.parseInt(c);
+		n -= 1;
+		if (n < listOfBorrowers.size() && n >= 0)
+		{
+			user.deleteBorrower(listOfBorrowers.get(n).getCardNo(), model.getConnection());
+		}
+		screen = 13;
+	}
+	
+	public void screen28(String c)
+	{
+		
 	}
 	
 	/* SCREEN INFORMATION:
@@ -541,6 +591,10 @@ public class MenuController {
 				break;
 			case 27:
 				screen27(c, sc);
+				break;	
+				
+			case 28:
+				screen28(c,sc);
 				break;
 			default:
 				break;
@@ -647,6 +701,7 @@ public class MenuController {
 			view.updateBorrower(Borrower.getListOfBorrowers(model.getConnection()));
 			break;
 		case 29:
+			view.deleteBorrower(Borrower.getListOfBorrowers(model.getConnection()));
 			break;
 		default:
 			break;
