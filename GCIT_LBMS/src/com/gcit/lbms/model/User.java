@@ -1,11 +1,12 @@
 package com.gcit.lbms.model;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public abstract class User {
-	
+
 	protected int level;
 	private int currentLibraryId;
 	private static dbConnection conn;
@@ -19,50 +20,81 @@ public abstract class User {
 	public int getCurrentLibrary(){
 		return currentLibraryId;
 	}
-	
-	public static Borrower getBorrower(int cardId)
+
+	public int getCardNo()
 	{
-		try {
-			String query = "SELECT * FROM tbl_borrower WHERE id = ?";
-			PreparedStatement pstmt = conn.getConnection().prepareStatement(query);
-			pstmt.setInt(1, cardId);
-			ResultSet rs = conn.executeQuery(pstmt);
-			//THIS MEANS THERE'S NO RESULT
-			if (!rs.next())
-			{
-				return null;
-			}else
-			//ELSE RETURN THE OBJECT
-			{
-				Borrower b = new Borrower(rs.getString("name"), rs.getInt("cardId"), rs.getString("address"), rs.getString("phone"));
-				return b;
-			}
-			
-		} catch (SQLException e) {
-			// TODO: handle exception
-		}
-		return null;
+		return 0;
 	}
-	
+
 	public Library getSelectedLibrary()
 	{
 		return selectedLibrary;
 	}
-	
+
 	public void setSelectedBook(Book b)
 	{
 		this.selectedBook = b;
 	}
-	
+
 	public Book getSelectedBook()
 	{
 		return this.selectedBook;
 	}
-	
+
 	public void setSelectedLibrary(Library l)
 	{
 		selectedLibrary = l;
 	}
-	
-	 
+
+	public void addBook(String title, int publisherId, dbConnection conn)
+	{
+
+	}
+	public void updateBook(int bookId, String title, int id, dbConnection connection) {
+
+	}
+	public void deleteBook(int bookId, dbConnection conn) {
+		// TODO Auto-generated method stub
+
+	}
+	public void addPublisher(String name, String address, String phone, dbConnection conn) {
+		// TODO Auto-generated method stub
+
+	}
+	public void updatePublisher(int id, String name, String address, String phone, dbConnection conn) {
+		// TODO Auto-generated method stub
+
+	}
+	public void deletePublisher(int id, dbConnection conn) {
+		// TODO Auto-generated method stub
+
+	}
+	public void addLibraryBranch(String name, String address, dbConnection conn)
+	{
+
+	}
+	public void updateLibraryBranch(String name, String address, int id , dbConnection conn)
+	{
+
+
+	}
+	public void deleteLibraryBranch(int id, dbConnection conn)
+	{
+	}
+	public void addBorrower(String name, String address, String phone, dbConnection conn)
+	{
+	}
+
+	public void updateBorrower(String name, String address, String phone, int cardNo, dbConnection conn)
+	{
+		
+	}
+	public void deleteBorrower(int id, dbConnection conn)
+	{
+		
+	}
+	public void overrideDueDate(int cardNo, int bookId, int branchId, Date newDate, dbConnection conn)
+	{
+		
+	}
 }

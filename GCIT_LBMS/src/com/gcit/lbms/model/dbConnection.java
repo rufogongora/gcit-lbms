@@ -82,7 +82,7 @@ public class dbConnection {
 	{
 		checkConnection();
 		try {
-			pstmt.executeUpdate();
+			pstmt.executeUpdate(	);
 			conn.close();
 		} catch (SQLException e) {
 			debugError(e);
