@@ -78,6 +78,10 @@ public class Library {
 		catch (Exception e) {
 			// TODO: handle exception
 		}
+		finally
+		{
+			conn.closeConnection();
+		}
 		return list;
 	}
 
@@ -102,6 +106,10 @@ public class Library {
 		{
 
 		}
+		finally
+		{
+			conn.closeConnection();
+		}
 		this.listOfBooks = bookList;
 		return this.listOfBooks;
 	}
@@ -110,7 +118,7 @@ public class Library {
 	{
 		try
 		{
-			String query = "SELECT * FROM tbl_libray_loans WHERE cardNo = ? AND bookId = ?";
+			String query = "SELECT * FROM tbl_book_loans WHERE cardNo = ? AND bookId = ?";
 			PreparedStatement pstmt = conn.getConnection().prepareStatement(query);
 			pstmt.setInt(1, u.getCardNo());
 			pstmt.setInt(2, b.getBookId());
@@ -121,6 +129,10 @@ public class Library {
 		catch (SQLException e)
 		{
 			
+		}
+		finally
+		{
+			conn.closeConnection();
 		}
 		return false;
 	}
@@ -145,6 +157,10 @@ public class Library {
 		{
 
 		}
+		finally
+		{
+			conn.closeConnection();
+		}
 		return 0;
 	}
 	
@@ -168,6 +184,10 @@ public class Library {
 		catch(SQLException e)
 		{
 			
+		}
+		finally
+		{
+			conn.closeConnection();
 		}
 		
 	}
@@ -204,6 +224,10 @@ public class Library {
 		{
 
 		}
+		finally
+		{
+			conn.closeConnection();
+		}
 	}
 	
 	public ArrayList<Book> getListOfOwedBooks(int cardNo, dbConnection conn)
@@ -228,6 +252,10 @@ public class Library {
 		{
 			
 		}
+		finally
+		{
+			conn.closeConnection();
+		}
 		return list;
 	}
 	
@@ -250,6 +278,10 @@ public class Library {
 		}catch(SQLException e)
 		{
 			e.printStackTrace();
+		}
+		finally
+		{
+			conn.closeConnection();
 		}
 	}
 

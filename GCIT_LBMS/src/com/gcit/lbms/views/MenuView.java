@@ -2,9 +2,11 @@ package com.gcit.lbms.views;
 
 import java.util.ArrayList;
 
+import com.gcit.lbms.model.Author;
 import com.gcit.lbms.model.Book;
 import com.gcit.lbms.model.Bookloan;
 import com.gcit.lbms.model.Borrower;
+import com.gcit.lbms.model.Genre;
 import com.gcit.lbms.model.Library;
 import com.gcit.lbms.model.Publisher;
 
@@ -33,6 +35,17 @@ public class MenuView {
 		System.out.println(i+") Quit to previous" );	
 	}
 
+	public void printListOfAuthors(ArrayList<Author> list)
+	{
+		int i =1;
+		for (Author b : list)
+		{
+			System.out.println(i+")" + b.getName());
+			i++;
+		}
+		System.out.println(i+") Quit to previous" );
+	}
+	
 	public void printListOfBooks(ArrayList<Book> list)
 	{
 
@@ -45,6 +58,21 @@ public class MenuView {
 		System.out.println(i+") Quit to previous" );
 	}
 	
+	public void printListOfGenre(ArrayList<Genre> list)
+	{
+		int i =1;
+		for (Genre b : list)
+		{
+			System.out.println(i+")" + b.getGenre_name());
+			i++;
+		}
+		System.out.println(i+") Quit to previous" );
+	}
+	
+	public void alreadyCheckedOut()
+	{
+		System.out.println("You've already checked out that book");
+	}
 	
 	public void printBorrowers(ArrayList<Borrower> list)
 	{

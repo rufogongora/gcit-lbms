@@ -83,7 +83,7 @@ public class Bookloan {
 			try
 			{
 				
-				String query = "SELECT l.*, b.name, bo.title FROM tbl_book_loans as l JOIN tbl_borrower as b ON (l.cardNo = b.cardNo) JOIN tbl_book as bo ON (l.bookId = bo.bookId) group by l.bookId";
+				String query = "SELECT l.*, b.name, bo.title FROM tbl_book_loans as l JOIN tbl_borrower as b ON (l.cardNo = b.cardNo) JOIN tbl_book as bo ON (l.bookId = bo.bookId) group by l.bookId, l.cardNo, l.branchId;";
 				PreparedStatement pstmt = conn.getConnection().prepareStatement(query);
 				ResultSet rs = conn.executeQuery(pstmt);
 				while (rs.next())

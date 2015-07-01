@@ -2,7 +2,9 @@ package com.gcit.lbms.model;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 public class Administrator extends Librarian {
 
@@ -11,14 +13,40 @@ public class Administrator extends Librarian {
 
 	}
 
-	@Override public void addBook(String title, int publisherId , dbConnection conn)
+	@Override 
+	public void addBook(String title, int publisherId , int authorId, int genreId ,dbConnection conn)
 	{
 		try{
 			String query = "INSERT INTO tbl_book (title, pubId) VALUES (?, ?)";
-			PreparedStatement pstmt = conn.getConnection().prepareStatement(query);
+			PreparedStatement pstmt = conn.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 			pstmt.setString(1, title);
 			pstmt.setInt(2, publisherId);
-			conn.executeUpdate(pstmt);
+			pstmt.executeUpdate();
+			
+			ResultSet rs = pstmt.getGeneratedKeys();
+			
+			int bookId = 0; 
+			if (rs.next())
+			{
+				bookId = rs.getInt(1);
+			}
+			else
+				return;
+
+			//insert into book authors
+			query = "INSERT INTO tbl_book_authors VALUES (?,?)";
+			pstmt = conn.getConnection().prepareStatement(query);
+			pstmt.setInt(1, bookId);
+			pstmt.setInt(2, authorId);
+			pstmt.executeUpdate();
+			
+			//insert into book_genre
+			query = "INSERT INTO tbl_book_genres VALUES (?,?)";
+			pstmt = conn.getConnection().prepareStatement(query);
+			pstmt.setInt(1, genreId);
+			pstmt.setInt(2, bookId);
+			pstmt.executeUpdate();
+			
 		}
 		catch (SQLException e)
 		{

@@ -41,7 +41,7 @@ public abstract class User {
 		selectedLibrary = l;
 	}
 
-	public void addBook(String title, int publisherId, dbConnection conn)
+	public void addBook(String title, int publisherId , int authorId, int genreId , dbConnection conn)
 	{
 
 	}

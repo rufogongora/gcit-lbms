@@ -5,9 +5,11 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import com.gcit.lbms.model.Administrator;
+import com.gcit.lbms.model.Author;
 import com.gcit.lbms.model.Book;
 import com.gcit.lbms.model.Bookloan;
 import com.gcit.lbms.model.Borrower;
+import com.gcit.lbms.model.Genre;
 import com.gcit.lbms.model.Librarian;
 import com.gcit.lbms.model.Library;
 import com.gcit.lbms.model.Menu;
@@ -214,9 +216,12 @@ public class MenuController {
 				user.getSelectedLibrary().checkOutBook(user.getCardNo(), user.getSelectedBook(), model.getConnection());
 				screen = 8;
 			}
+			else
+			{
+				view.alreadyCheckedOut();
+			}
 		}
-		else
-			screen = 8;
+		screen = 8;
 	}
 	public void screen11(String c)
 	{
@@ -291,14 +296,44 @@ public class MenuController {
 	
 	public void screen15(String c, Scanner sc){
 		System.out.println("Now select from the list of publishers: ");
+		
+		//select from the list of publishers
 		ArrayList<Publisher> list = Publisher.getPublisherList(model.getConnection());
 		view.printPublisherList(list);
 		int n = sc.nextInt();
 		n -= 1;
-		if (n < list.size() && n >= 0)
+		if (n >= list.size() || n < 0)
 		{
-			user.addBook(c, list.get(n).getId(), model.getConnection());
+			screen = 13;
+			return;
 		}
+		//select from the list of authors
+		ArrayList<Author> authorList = Author.getListOfAuthors(model.getConnection());
+		System.out.println("Now select from the list of Authors: ");
+		view.printListOfAuthors(authorList);
+		int n1 = sc.nextInt();
+		n1 -= 1;
+		if (n >= authorList.size() || n < 0)
+		{
+			screen = 13;
+			return;
+		}	
+		
+		//select from the list of Genres
+		ArrayList<Genre> listOfGenres = Genre.getListOfGenre(model.getConnection());
+		System.out.println("Now select from the list of genres: ");
+		view.printListOfGenre(listOfGenres);
+		int n2 = sc.nextInt();
+		n2 -= 1;
+		if (n < listOfGenres.size() || n >= 0)
+		{
+			user.addBook(c, list.get(n).getId(), authorList.get(n1).getId(), listOfGenres.get(n2).getGenreId(), model.getConnection());
+		}
+		
+
+		
+		
+		
 		screen = 13;
 		
 	}
@@ -398,7 +433,7 @@ public class MenuController {
 	{
 		
 		ArrayList<Library> listOfLibraries = Library.getLibraries(model.getConnection());
-		int n = sc.nextInt();
+		int n = Integer.parseInt(c);
 		n-=1;
 		if (n < listOfLibraries.size() && n>= 0)
 		{
@@ -501,6 +536,19 @@ public class MenuController {
 	 * 15 = ADD BOOK
 	 * 16 = UPDATE BOOK
 	 * 17 = DELETE BOOK
+	 * 18 = ADD UPDATE DELETE PUBLISHER
+	 * 19 = ADD PUBLISHER
+	 * 20 = UPDATE PUBLISHER
+	 * 21 = DELETE PUBLISHER
+	 * 22 = ADD UPDATE DELETE LIBRARY
+	 * 23 = ADD LIBRARY
+	 * 24 = UPDATE LIBRARY
+	 * 25 = DELETE LIBRARY
+	 * 26 = ADD UPDATE DELETE BORROWER
+	 * 27 = ADD BORROWER
+	 * 28 = UPDATE BORROWER
+	 * 29 = DELETE BORROWER
+	 * 30 = OVERRIDE LOAN
 	 */
 
 	public void takeInput(Scanner sc)

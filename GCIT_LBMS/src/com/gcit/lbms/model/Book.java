@@ -45,6 +45,10 @@ public class Book {
 		catch (Exception e) {
 			// TODO: handle exception
 		}
+		finally
+		{
+			conn.closeConnection();
+		}
 		return list;
 	}
 	
