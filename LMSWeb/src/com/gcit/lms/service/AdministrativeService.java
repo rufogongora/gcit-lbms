@@ -1,15 +1,18 @@
 package com.gcit.lms.service;
 
 import java.sql.Connection;
+import java.util.List;
 
 import com.gcit.lms.dao.AuthorDAO;
+import com.gcit.lms.dao.PublisherDAO;
 import com.gcit.lms.domain.Author;
+import com.gcit.lms.domain.Publisher;
 
 public class AdministrativeService {
 
 	public void createAuthor(Author author) throws Exception {
-		ConnectionUtil c = new ConnectionUtil();
-		Connection conn = c.createConnection();
+		//ConnectionUtil c = new ConnectionUtil();
+		Connection conn = ConnectionUtil.createConnection();
 		try {
 			if (author == null || author.getAuthorName() == null
 					|| author.getAuthorName().length() == 0
@@ -21,6 +24,43 @@ public class AdministrativeService {
 				adao.create(author);
 				conn.commit();
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			conn.rollback();
+		} finally {
+			conn.close();
+		}
+	}
+
+	public void createPublisher(Publisher publisher) throws Exception {
+		//ConnectionUtil c = new ConnectionUtil();
+		Connection conn = ConnectionUtil.createConnection();
+		try {
+			PublisherDAO pdao = new PublisherDAO(conn);
+			pdao.create(publisher);
+			conn.commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+			conn.rollback();
+		} finally {
+			conn.close();
+		}
+	}
+
+	public List<Author> readAuthors() throws Exception {
+		//ConnectionUtil c = new ConnectionUtil();
+		Connection conn = ConnectionUtil.createConnection();
+		AuthorDAO adao = new AuthorDAO(conn);
+		return adao.readAll();
+	}
+
+	public void deleteAuthor(Author author) throws Exception {
+		//ConnectionUtil c = new ConnectionUtil();
+		Connection conn = ConnectionUtil.createConnection();
+		AuthorDAO adao = new AuthorDAO(conn);
+		try {
+			adao.delete(author);
+			conn.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
 			conn.rollback();

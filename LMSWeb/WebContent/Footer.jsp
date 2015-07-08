@@ -1,9 +1,8 @@
-
-
+	  <div class="container marketing">
       <!-- FOOTER -->
       <footer>
-        <p class="pull-right"><a href="LMSWeb#">Back to top</a></p>
-        <p>Â© 2014 Company, Inc. Â· <a href="LMSWeb/#">Privacy</a> <a href="http://getbootstrap.com/examples/carousel/#">Terms</a></p>
+        <p class="pull-right"><a href="http://getbootstrap.com/examples/carousel/#">Back to top</a></p>
+        <p>© 2014 Company, Inc. · <a href="http://getbootstrap.com/examples/carousel/#">Privacy</a> · <a href="http://getbootstrap.com/examples/carousel/#">Terms</a></p>
       </footer>
 
     </div><!-- /.container -->
@@ -18,6 +17,8 @@
     <script src="/LMSWeb/includes/js/holder.min.js"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="/LMSWeb/includes/js/ie10-viewport-bug-workaround.js"></script>
+    
+    <script src = "/LMSWeb/includes/js/authorMenu.js"></script>
   
 
 </body></html>
