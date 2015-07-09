@@ -22,10 +22,10 @@
           <h2>Author Menu</h2>
         </div><!-- /.col-lg-4 -->
         <div class="col-lg-4">
-        <a href="#" data-toggle="modal" data-target="#deleteAuthorModal" >
+        <a href="#" data-toggle="modal" data-target="#bookModal" >
           <img class="img-circle" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" width="140" height="140">
           </a> 
-          <h2>Heading</h2>
+          <h2>Book Menu</h2>
          
          </div><!-- /.col-lg-4 -->
         <div class="col-lg-4">

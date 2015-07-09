@@ -1,40 +1,80 @@
 
-$(".deleteAuthor").click(
-		function(data){
-			
-			var thisAuthor = $(this)
-			
-			var authorIdvar = parseInt($(this).attr("authorId"));
-			//console.log(authorIdvar)
-			
-			var x =  { authorId : authorIdvar}
-			console.log(x)
-			$.post("/LMSWeb/deleteAuthor", x ).done(function (data){
-				thisAuthor.parent().parent().hide();
-			});
+$(".deleteAuthor").bind("click", deleteAuthor);
+$(".editAuthor").bind("click", updateEditAuthorModal)
 
-		});
+
+$("#updateAuthor").click(function(data){
+	var authorIdvar = parseInt($("#newAuthorName").attr("authorid"));
+	var authorNamevar = $("#newAuthorName").val();
+	
+	if (!authorNamevar)
+		{
+			return
+		}
+	
+	var jsonToSend = {authorId : authorIdvar, authorName : authorNamevar}
+	
+	$.post("/LMSWeb/updateAuthor", jsonToSend).done(function(data)
+			{
+				var editedAuthor = JSON.parse(data)
+				$("td[authorId='"+authorIdvar+"']").text(editedAuthor.authorName)
+			})
+	
+
+})
+
+function deleteAuthor()
+{
+	var thisAuthor = $(this)
+	var authorIdvar = parseInt($(this).attr("authorId"));
+
+	var x =  { authorId : authorIdvar}
+	$.post("/LMSWeb/deleteAuthor", x ).done(function (data){
+		thisAuthor.parent().parent().hide();
+	});
+}
+
+function updateEditAuthorModal()
+{
+	var authorIdvar = parseInt($(this).attr("authorid"));
+	$("#newAuthorName").attr("authorId", authorIdvar)
+
+}
+
+
 
 
 $(".addAuthor").click(
 		function(data){
-			
 			var authorNameVar = $("#authorNameInput").val()
+
+			if (!authorNameVar){
+				return
+			}
 			
 			var x =  { authorName : authorNameVar}
-			
+
 			$.post("/LMSWeb/addAuthor", x ).done(function (data){
-				var row = $("<tr>").append("<td>").val()
-				
-				
-				
-				/*<tr >
-				<td><%out.println(a.getAuthorId()); %></td>
-				<td><%out.println(a.getAuthorName()); %></td>
-				<td><button type="button" class="btn btn-md btn-success">Edit</button></td>
-				<td><button type="button" class="btn btn-md btn-danger deleteAuthor" authorId = "<%out.print(a.getAuthorId()); %>">Delete</button></td>
-			</tr>*/
+
+				var author = JSON.parse(data)
+				//console.log(author[0].authorId)
+
+				var rowColumnClone = $("#authorCloneMe").clone()
+				rowColumnClone.children().eq(0).text(author.authorId) //authorId
+				rowColumnClone.children().eq(1).text(authorNameVar)
+				rowColumnClone.children().eq(1).attr("authorId",author.authorId	)
+				rowColumnClone.children().eq(2).children().eq(0).attr("authorName",authorNameVar)
+				rowColumnClone.children().eq(2).children().eq(0).attr("authorId",author.authorId)
+				rowColumnClone.children().eq(2).children().eq(0).bind("click", updateEditAuthorModal)
+				rowColumnClone.children().eq(3).children().eq(0).attr("authorId",author.authorId)
+				rowColumnClone.children().eq(3).children().eq(0).bind("click", deleteAuthor)
+				$("#authorTable").append(rowColumnClone)
+				rowColumnClone.show();
+
+
+			}).fail(function(data){
+				console.log("fail")
 			});
-			
-			
+
 		});
+

@@ -16,8 +16,9 @@ public class AuthorDAO extends BaseDAO<Author> {
 	}
 
 	public void create(Author author) throws Exception {
-		save("insert into tbl_author (authorName) values(?)",
+		int authorId = saveWithID("insert into tbl_author (authorName) values(?)",
 				new Object[] { author.getAuthorName() });
+		author.setAuthorId(authorId);
 	}
 
 	public void update(Author author) throws Exception {

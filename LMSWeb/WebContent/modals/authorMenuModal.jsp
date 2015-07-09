@@ -5,18 +5,7 @@
 <%AdministrativeService adminService = new AdministrativeService();
 	List<Author> authors = adminService.readAuthors();
 %>
-<!-- <script>
-	function deleteAuthor(id) {
-		//document.location.href = "deleteAuthor?authorId="+id;
-		
-		document.getElementById("authorId").value = id;
-		document.deleteFrm.submit();
-	}
 
-</script>  -->
-   
-    
-<!--  <form action="/LMSWeb/addAuthor" method="post"> -->
 <div class="modal fade" id="authorModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -25,7 +14,7 @@
         <h4 class="modal-title" id="myModalLabel">Author Menu</h4>
       </div>
       <div class="modal-body">
-		<table class="table">
+		<table class="table" id="authorTable">
 
 			<tr>
 				<th>Author ID</th>
@@ -33,14 +22,24 @@
 				<th>Edit Author</th>
 				<th>Delete Author</th>
 			</tr>
+			
+			<tr id="authorCloneMe" style="display:none">
+				<td>authorId</td>
+				<td authorId="0">authorName</td>
+				<td><button type="button" class="btn btn-md btn-success editAuthor" data-toggle="modal" data-target="#editAuthorModal"
+				authorId = "0" authorName = "no">Edit</button></td>
+				<td><button type="button" class="btn btn-md btn-danger deleteAuthor" authorId = "authorId">Delete</button></td>
+			</tr>
+			
 			<%for(Author a: authors){ %>
 			<tr >
 				<td><%out.println(a.getAuthorId()); %></td>
-				<td><%out.println(a.getAuthorName()); %></td>
-				<td><button type="button" class="btn btn-md btn-success">Edit</button></td>
+				<td authorId="<%out.print(a.getAuthorId()); %>"><%out.print(a.getAuthorName()); %></td>
+				<td><button type="button" class="btn btn-md btn-success editAuthor" data-toggle="modal" data-target="#editAuthorModal" 
+				 authorId = "<%out.print(a.getAuthorId()); %>" authorName = "<%out.print(a.getAuthorName()); %>">Edit</button></td>
 				<td><button type="button" class="btn btn-md btn-danger deleteAuthor" authorId = "<%out.print(a.getAuthorId()); %>">Delete</button></td>
 			</tr>
-			<%} %>
+			<%}; %>
 		</table>
 			
 	
@@ -54,18 +53,36 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="submit" class="btn btn-primary">Save changes</button>
+<!--         <button type="submit" class="btn btn-primary">Save changes</button> -->
       </div>
     </div>
   </div>
 </div>
-<!-- </form> -->
+
+
+<!--  Edit author sub-modal -->
+
+<div class="modal fade" id="editAuthorModal" tabindex="-1" role="dialog" aria-labelledby="editAuthorLabel">  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class = "row">
+        	 <div class="col-lg-6">
+		    <div class="input-group">
+		      <input type="text" id="newAuthorName" authorId="0" class="form-control" placeholder="Enter new name...">
+		      <span class="input-group-btn">
+		        <button class="btn btn-default" type="button" data-dismiss="modal" id="updateAuthor">Update</button>
+		        <button class="btn btn-default" type="button" data-dismiss="modal" >Close</button>
+		        
+		      </span>
+		    </div><!-- /input-group -->
+		  </div><!-- /.col-lg-6 -->
+        </div>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
 
 
-<!-- 
-<form action="/LMSWeb/deleteAuthor" method="post" name="deleteFrm">
-	<input type="hidden" name="authorId" id="authorId"/>
-</form>
- -->
+
 

@@ -19,6 +19,6 @@
     <script src="/LMSWeb/includes/js/ie10-viewport-bug-workaround.js"></script>
     
     <script src = "/LMSWeb/includes/js/authorMenu.js"></script>
-  
+  	<script src = "/LMSWeb/includes/js/bookMenu.js"></script>
 
 </body></html>

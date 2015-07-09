@@ -29,7 +29,9 @@ public class BookDAO extends BaseDAO<Book>{
 			save("insert into tbl_book_genres (bookId, genre_id) values (?,?)", 
 				new Object[]{bookId, g.getGenreId()});
 		}
+		book.setBookId(bookId);
 	}
+	
 	
 	public List<Book> readAll() throws Exception{
 		return (List<Book>) read("select * from tbl_book", null);
@@ -46,11 +48,11 @@ public class BookDAO extends BaseDAO<Book>{
 			Book b = new Book();
 			b.setBookId(rs.getInt("bookId"));
 			b.setTitle(rs.getString("title"));
-			b.setPublisher(pdao.readOne(rs.getInt("pubId")));
+			/*		b.setPublisher(pdao.readOne(rs.getInt("pubId")));
 			@SuppressWarnings("unchecked")
 			List<Author> authors = (List<Author>) aDao.readFirstLevel("select * from tbl_author where authorId In"
 					+ "(select authorId from tbl_book_authors where bookId=?)", new Object[] {rs.getInt("bookId")});
-			b.setAuthors(authors);
+			b.setAuthors(authors);*/
 			books.add(b);
 		}
 		
