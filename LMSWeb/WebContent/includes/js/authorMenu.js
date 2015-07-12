@@ -18,6 +18,10 @@ $("#updateAuthor").click(function(data){
 			{
 				var editedAuthor = JSON.parse(data)
 				$("td[authorId='"+authorIdvar+"']").text(editedAuthor.authorName)
+				
+				$("option[value='"+authorIdvar+"']").text(editedAuthor.authorName)
+
+				
 			})
 	
 
@@ -60,6 +64,7 @@ $(".addAuthor").click(
 				//console.log(author[0].authorId)
 
 				var rowColumnClone = $("#authorCloneMe").clone()
+				rowColumnClone.removeAttr("id")
 				rowColumnClone.children().eq(0).text(author.authorId) //authorId
 				rowColumnClone.children().eq(1).text(authorNameVar)
 				rowColumnClone.children().eq(1).attr("authorId",author.authorId	)
@@ -71,6 +76,11 @@ $(".addAuthor").click(
 				$("#authorTable").append(rowColumnClone)
 				rowColumnClone.show();
 
+				//add the option to the selector
+				var newOption = $("<option>")
+				newOption.attr("value", author.authorId)
+				newOption.text(authorNameVar)
+				$("#authorDropdown").append(newOption)
 
 			}).fail(function(data){
 				console.log("fail")

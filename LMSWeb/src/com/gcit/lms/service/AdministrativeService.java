@@ -1,13 +1,16 @@
 package com.gcit.lms.service;
 
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.gcit.lms.dao.AuthorDAO;
 import com.gcit.lms.dao.BookDAO;
+import com.gcit.lms.dao.GenreDAO;
 import com.gcit.lms.dao.PublisherDAO;
 import com.gcit.lms.domain.Author;
 import com.gcit.lms.domain.Book;
+import com.gcit.lms.domain.Genre;
 import com.gcit.lms.domain.Publisher;
 
 public class AdministrativeService {
@@ -78,6 +81,18 @@ public class AdministrativeService {
 		return adao.readAll();
 	}
 
+	public List<Genre> readGenres() throws Exception{
+		Connection conn = ConnectionUtil.createConnection();
+		GenreDAO gdao = new GenreDAO(conn);
+		return gdao.readAll();
+	}
+	
+	public Genre readGenre(int genreId) throws Exception{
+		Connection conn = ConnectionUtil.createConnection();
+		GenreDAO gdao = new GenreDAO(conn);
+		return gdao.readOne(genreId);
+	}
+	
 	public void deleteAuthor(Author author) throws Exception {
 		//ConnectionUtil c = new ConnectionUtil();
 		Connection conn = ConnectionUtil.createConnection();
@@ -93,8 +108,65 @@ public class AdministrativeService {
 		}
 	}
 	
+	public Author readAuthor(int id) throws Exception{
+		Connection conn = ConnectionUtil.createConnection();
+		AuthorDAO adao = new AuthorDAO(conn);
+		try{
+			return adao.readOne(id);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			conn.rollback();
+		}finally
+		{
+			conn.close();
+		}
+		return null;
+	}
 	
+	public void createBook(Book book) throws Exception{
+		Connection conn = ConnectionUtil.createConnection();
+		BookDAO bdao = new BookDAO(conn);
 
+		try{
+			bdao.create(book);
+			conn.commit();
+		}catch (Exception e){
+			e.printStackTrace();
+			conn.rollback();
+		}finally{
+			conn.close();
+		}
+	}
+
+	
+	public void deleteBook(Book book) throws Exception{
+		Connection conn = ConnectionUtil.createConnection();
+		BookDAO bdao = new BookDAO(conn);
+
+		try{
+			bdao.delete(book);
+			conn.commit();
+		}catch (Exception e){
+			e.printStackTrace();
+			conn.rollback();
+		}finally{
+			conn.close();
+		}
+	}
+	public List<Publisher> readPublishers() throws Exception{
+		Connection conn = ConnectionUtil.createConnection();
+		PublisherDAO pdao = new PublisherDAO(conn);
+		return pdao.readAll();
+	}
+	
+	public Publisher readOnePublisher(int id ) throws Exception{
+		Connection conn = ConnectionUtil.createConnection();
+		PublisherDAO pdao = new PublisherDAO(conn);
+		return pdao.readOne(id);
+	}
+	
 	public List<Book> readBooks() throws Exception {
 		Connection conn = ConnectionUtil.createConnection();
 		BookDAO bdao = new BookDAO(conn);

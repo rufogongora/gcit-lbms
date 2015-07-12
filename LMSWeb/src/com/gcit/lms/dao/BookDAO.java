@@ -17,8 +17,8 @@ public class BookDAO extends BaseDAO<Book>{
 	}
 
 	public void create(Book book) throws Exception {
-		int bookId = saveWithID("insert into tbl_book (title) values(?)",
-				new Object[] { book.getTitle()});
+		int bookId = saveWithID("insert into tbl_book (title,pubId) values(?,?)",
+				new Object[] { book.getTitle(), book.getPublisher().getPublisherId()});
 		
 		for(Author a: book.getAuthors()){
 			save("insert into tbl_book_authors (bookId, authorId) values (?,?)", 
@@ -30,8 +30,12 @@ public class BookDAO extends BaseDAO<Book>{
 				new Object[]{bookId, g.getGenreId()});
 		}
 		book.setBookId(bookId);
-	}
+	}	
 	
+	public void delete(Book book) throws Exception {
+		save("delete from tbl_book where bookId = ?",
+				new Object[] { book.getBookId() });
+	}
 	
 	public List<Book> readAll() throws Exception{
 		return (List<Book>) read("select * from tbl_book", null);
@@ -43,16 +47,24 @@ public class BookDAO extends BaseDAO<Book>{
 		List<Book> books = new ArrayList<Book>();
 		PublisherDAO pdao = new PublisherDAO(getConnection());
 		AuthorDAO aDao = new AuthorDAO(getConnection());
+		GenreDAO gDao = new GenreDAO(getConnection());
 		//GenreDAO gD
 		while(rs.next()){
 			Book b = new Book();
 			b.setBookId(rs.getInt("bookId"));
 			b.setTitle(rs.getString("title"));
-			/*		b.setPublisher(pdao.readOne(rs.getInt("pubId")));
+			b.setPublisher(pdao.readOne(rs.getInt("pubId")));
+
 			@SuppressWarnings("unchecked")
 			List<Author> authors = (List<Author>) aDao.readFirstLevel("select * from tbl_author where authorId In"
 					+ "(select authorId from tbl_book_authors where bookId=?)", new Object[] {rs.getInt("bookId")});
-			b.setAuthors(authors);*/
+			b.setAuthors(authors);
+			
+			@SuppressWarnings("unchecked")
+			List<Genre> genres = (List<Genre>) gDao.readFirstLevel("select * from tbl_genre where genre_id In"
+					+ "(select genre_id from tbl_book_genres where bookId=?)", new Object[] {rs.getInt("bookId")});
+			b.setGenres(genres);
+			
 			books.add(b);
 		}
 		
@@ -63,12 +75,12 @@ public class BookDAO extends BaseDAO<Book>{
 	public List<Book> extractDataFirstLevel(ResultSet rs) throws Exception {
 		List<Book> books = new ArrayList<Book>();
 		PublisherDAO pdao = new PublisherDAO(getConnection());
-		AuthorDAO aDao = new AuthorDAO(getConnection());
 		//GenreDAO gD
 		while(rs.next()){
 			Book b = new Book();
 			b.setBookId(rs.getInt("bookId"));
 			b.setTitle(rs.getString("title"));
+			b.setPublisher(pdao.readOne(rs.getInt("pubId")));
 			books.add(b);
 		}
 		

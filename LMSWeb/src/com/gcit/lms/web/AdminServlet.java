@@ -1,8 +1,20 @@
 package com.gcit.lms.web;
 
+
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.List;
+
+
+
+
+
+
+
+
+import java.util.Map;
+import java.util.StringTokenizer;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -11,15 +23,34 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+
+
+
+
+
+
+
+
+
+
+
+
+import com.gcit.lms.dao.AuthorDAO;
+import com.gcit.lms.dao.PublisherDAO;
 import com.gcit.lms.domain.Author;
 import com.gcit.lms.domain.Book;
+import com.gcit.lms.domain.Genre;
 import com.gcit.lms.domain.Publisher;
 import com.gcit.lms.service.AdministrativeService;
-
+import com.google.gson.Gson;
+class Wrapper{
+	String authorId;
+	String authorName;
+}
 /**
  * Servlet implementation class AdminServlet
  */
-@WebServlet({ "/addAuthor", "/addPublisher", "/updateAuthor", "/viewAuthors", "/deleteAuthor"})
+@WebServlet({ "/addAuthor", "/addPublisher", "/addBook", "/updateAuthor", "/viewAuthors", "/deleteBook",  "/deleteAuthor"})
 public class AdminServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -63,10 +94,15 @@ public class AdminServlet extends HttpServlet {
 		case "viewAuthors":
 			viewAuthors(request, response);
 			break;
-		case "/deleteAuthor": {
+		case "/deleteAuthor": 
 			deleteAuthor(request, response);
 			break;
-		}
+		case "/addBook":
+			createBook(request, response);
+			break;
+		case "/deleteBook":
+			deleteBook(request, response);
+			break;
 		default:
 			break;
 		}
@@ -110,9 +146,103 @@ public class AdminServlet extends HttpServlet {
 		  String jsonData = "{ \"authorId\" : \"" + a.getAuthorId() +  "\"}"; 
 
 		    // to send out the json data
-
-		 
 		    response.getWriter().write(jsonData);
+	}
+
+	private void createBook(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		String bookName = request.getParameter("bookTitle");
+		Book b = new Book();
+		b.setTitle(bookName);
+		String authorsString = request.getParameter("authors");
+		String genresString = request.getParameter("genres");
+		String publisherId = request.getParameter("publisherId");
+		AdministrativeService adminService = new AdministrativeService();
+		try {
+
+			b.setAuthors(parseJson(authorsString));
+			b.setGenres(parseJsonGenre(genresString));
+			if (Integer.parseInt(publisherId) >= 0 )
+			{
+				Publisher p = adminService.readOnePublisher(Integer.parseInt(publisherId));
+				b.setPublisher(p);
+			}else
+			{
+				b.setPublisher(new Publisher());
+				b.getPublisher().setPublisherName("No publisher");
+			}
+			adminService.createBook(b);
+			request.setAttribute("result", "Author Added Successfully");
+			
+			//json to answer back
+			String jsonData = "{ \"bookId\" : \"" + b.getBookId() +
+					"\", \"publisherName\" : \"" + b.getPublisher().getPublisherName() +  "\", \"bookTitle\" : \"" + b.getTitle() + "\" }";
+			
+			response.getWriter().write(jsonData);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			request.setAttribute("result",
+					"Author add failed " + e.getMessage());
+		}
+
+
+	}
+
+	private ArrayList<Author> parseJson(String s) throws Exception {
+		ArrayList<Author> authors = new ArrayList<Author>();
+		StringTokenizer st = new StringTokenizer(s, "\"{;:[],}");
+		AdministrativeService adminService = new AdministrativeService();
+		
+	    int i = 0;
+	    int authorId =0;
+	    String authorName = "";
+		while (st.hasMoreTokens()) {
+			String sx = st.nextToken();
+			if (i == 4)
+			{
+			    Author a = adminService.readAuthor(authorId);
+				authors.add(a);
+				i = 0;
+			}
+			//this is an id
+			if (i == 1)
+			{
+				authorId = Integer.parseInt(sx);
+			}
+		   i++;
+		}
+		Author a = adminService.readAuthor(authorId);
+		authors.add(a);
+		return authors;
+	}
+	
+	private ArrayList<Genre> parseJsonGenre(String s) throws Exception {
+		ArrayList<Genre> genres = new ArrayList<Genre>();
+		StringTokenizer st = new StringTokenizer(s, "\"{;:[],}");
+		AdministrativeService adminService = new AdministrativeService();
+		
+	    int i = 0;
+	    int genreId =0;
+	    String authorName = "";
+		while (st.hasMoreTokens()) {
+			String sx = st.nextToken();
+			if (i == 4)
+			{
+			   	Genre g = adminService.readGenre(genreId);
+				genres.add(g);
+				i = 0;
+			}
+			//this is an id
+			if (i == 1)
+			{
+				genreId = Integer.parseInt(sx);
+			}
+		   i++;
+		}
+		Genre g = adminService.readGenre(genreId);
+		genres.add(g);
+		return genres;
 	}
 	
 	
@@ -134,6 +264,7 @@ public class AdminServlet extends HttpServlet {
 					"Author add failed " + e.getMessage());
 		}
 		String jsonData = "{ \"authorId\" : \"" + a.getAuthorId() +  "\", \"authorName\" : \"" + a.getAuthorName() +  "\"}"; 
+		
 		// to send out the json data
 		response.getWriter().write(jsonData);
 	}
@@ -193,9 +324,30 @@ public class AdminServlet extends HttpServlet {
 					"Author Delete Failed because: " + e.getMessage());
 		}
 		
-		rd.forward(request, response);
 	}
 	
+	
+	
+	private void deleteBook(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		String bookId = request.getParameter("bookId");
+		Book book = new Book();
+		book.setBookId(Integer.parseInt(bookId));
+
+		RequestDispatcher rd = getServletContext().getRequestDispatcher(
+				"/menus/admin.jsp");
+		try {
+			new AdministrativeService().deleteBook(book);
+			response.getWriter().write("Success");
+			request.setAttribute("result", "Author Deleted Succesfully!");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			request.setAttribute("result",
+					"Author Delete Failed because: " + e.getMessage());
+		}
+		
+	}
 	
 	/*
 	private void createBook(HttpServletRequest request,

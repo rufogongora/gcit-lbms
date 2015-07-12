@@ -1,6 +1,6 @@
       <!-- Modal -->
 <%@page import="com.gcit.lms.service.AdministrativeService"%>
-<%@page import="java.util.List"%>
+<%@ page import="java.util.List" %>
 <%@page import="com.gcit.lms.domain.Author"%>
 <%AdministrativeService adminService = new AdministrativeService();
 	List<Author> authors = adminService.readAuthors();

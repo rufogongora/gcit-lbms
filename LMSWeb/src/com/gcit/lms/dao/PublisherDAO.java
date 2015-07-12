@@ -31,13 +31,13 @@ public class PublisherDAO extends BaseDAO {
 				new Object[] { author.getAuthorName() });
 	}
 
-	public List<Author> readAll() throws Exception{
-		return (List<Author>) read("select * from tbl_author", null);
+	public List<Publisher> readAll() throws Exception{
+		return (List<Publisher>) read("select * from tbl_publisher", null);
 		
 	}
 
 	public Publisher readOne(int publisherId) throws Exception {
-		List<Publisher> publishers = (List<Publisher>) read("select * from tbl_publisher", new Object[] {publisherId});
+		List<Publisher> publishers = (List<Publisher>) read("select * from tbl_publisher where publisherId = (?)", new Object[] {publisherId});
 		if(publishers!=null && publishers.size()>0){
 			return publishers.get(0);
 		}
@@ -46,16 +46,18 @@ public class PublisherDAO extends BaseDAO {
 
 	@Override
 	public List extractData(ResultSet rs) throws Exception {
-		List<Author> authors =  new ArrayList<Author>();
+		List<Publisher> publishers =  new ArrayList<Publisher>();
 		
 		while(rs.next()){
-			Author a = new Author();
-			a.setAuthorId(rs.getInt("authorId"));
-			a.setAuthorName(rs.getString("authorName"));
+			Publisher p = new Publisher();
+			p.setPublisherId(rs.getInt("publisherId"));
+			p.setPublisherName(rs.getString("publisherName"));
+			p.setPublisherAddress(rs.getString("publisherAddress"));
+			p.setPublisherPhone(rs.getString("publisherPhone"));
 			
-			authors.add(a);
+			publishers.add(p);
 		}
-		return authors;
+		return publishers;
 	}
 
 	@Override
