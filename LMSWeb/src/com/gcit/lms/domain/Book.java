@@ -37,6 +37,11 @@ public class Book {
 	 * @return the publisher
 	 */
 	public Publisher getPublisher() {
+		if (publisher==null)
+		{
+			this.publisher = new Publisher();
+			this.publisher.setPublisherName("No Publisher");
+		}
 		return publisher;
 	}
 	/**

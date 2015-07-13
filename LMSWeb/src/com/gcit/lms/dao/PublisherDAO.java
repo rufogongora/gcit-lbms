@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.gcit.lms.domain.Author;
+import com.gcit.lms.domain.Book;
 import com.gcit.lms.domain.Publisher;
 
 public class PublisherDAO extends BaseDAO {
@@ -16,8 +17,9 @@ public class PublisherDAO extends BaseDAO {
 	}
 
 	public void create(Publisher publisher) throws Exception {
-		save("insert into tbl_publisher (publisherName, publisherAddress, publisherPhone) values(?, ?, ?)",
+		int publisherId = saveWithID("insert into tbl_publisher (publisherName, publisherAddress, publisherPhone) values(?, ?, ?)",
 				new Object[] { publisher.getPublisherName(), publisher.getPublisherAddress(), publisher.getPublisherPhone() });
+		publisher.setPublisherId(publisherId);
 	}
 
 	public void update(Publisher publisher) throws Exception {
@@ -26,9 +28,9 @@ public class PublisherDAO extends BaseDAO {
 
 	}
 
-	public void delete(Author author) throws Exception {
-		save("delete from tbl_author where authorId = ?",
-				new Object[] { author.getAuthorName() });
+	public void delete(Publisher publisher) throws Exception {
+		save("delete from tbl_publisher where publisherId = ?",
+				new Object[] { publisher.getPublisherId() });
 	}
 
 	public List<Publisher> readAll() throws Exception{
@@ -54,7 +56,7 @@ public class PublisherDAO extends BaseDAO {
 			p.setPublisherName(rs.getString("publisherName"));
 			p.setPublisherAddress(rs.getString("publisherAddress"));
 			p.setPublisherPhone(rs.getString("publisherPhone"));
-			
+
 			publishers.add(p);
 		}
 		return publishers;

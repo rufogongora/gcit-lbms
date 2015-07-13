@@ -20,7 +20,7 @@ public class GenreDAO extends BaseDAO{
 	}
 
 	public void update(Genre genre) throws Exception {
-		save("update tbl_genre set genre_name = ? where genreId = ?",
+		save("update tbl_genre set genre_name = ? where genre_id = ?",
 				new Object[] { genre.getGenreName(), genre.getGenreId() });
 
 	}

@@ -35,11 +35,15 @@ import javax.servlet.http.HttpServletResponse;
 
 
 
+
+
 import com.gcit.lms.dao.AuthorDAO;
 import com.gcit.lms.dao.PublisherDAO;
 import com.gcit.lms.domain.Author;
 import com.gcit.lms.domain.Book;
+import com.gcit.lms.domain.BookCopies;
 import com.gcit.lms.domain.Genre;
+import com.gcit.lms.domain.LibraryBranch;
 import com.gcit.lms.domain.Publisher;
 import com.gcit.lms.service.AdministrativeService;
 import com.google.gson.Gson;
@@ -50,7 +54,9 @@ class Wrapper{
 /**
  * Servlet implementation class AdminServlet
  */
-@WebServlet({ "/addAuthor", "/addGenre", "/deleteGenre","/addPublisher", "/addBook", "/editBook", "/updateAuthor", "/viewAuthors", "/deleteBook",  "/deleteAuthor"})
+@WebServlet({ "/addAuthor", "/updateNoOfCopies", "/getLibrary", "/updatePublisher", "/deletePublisher", "/updateGenre",
+	"/addGenre", "/deleteGenre","/addPublisher", "/updateLibrary","/addBook", "/editBook",
+	"/updateAuthor", "/viewAuthors", "/deleteBook",  "/deleteAuthor"})
 public class AdminServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -68,7 +74,15 @@ public class AdminServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
+		String reqUrl = request.getRequestURI().substring(
+				request.getContextPath().length(),
+				request.getRequestURI().length());
+		switch (reqUrl) {
+		case "/getLibrary":
+			getLibrary(request, response);
+			break;
 		
+		}
 	}
 
 	/**
@@ -112,6 +126,22 @@ public class AdminServlet extends HttpServlet {
 		case "/deleteGenre":
 			deleteGenre(request, response);
 		break;
+		case "/updateGenre":
+			editGenre(request, response);
+			break;
+		case "/deletePublisher":
+			deletePublisher(request, response);
+			break;
+		case "/updatePublisher":
+			updatePublisher(request, response);
+			break;
+		case "/updateLibrary":
+			updateLibrary(request, response);
+			break;
+		case "/updateNoOfCopies":
+			updateNoOfCopies(request, response);
+			break;
+		
 		default:
 			break;
 		}
@@ -157,6 +187,49 @@ public class AdminServlet extends HttpServlet {
 		    // to send out the json data
 		    response.getWriter().write(jsonData);
 	}
+	
+	private void updateLibrary(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		String branchName = request.getParameter("libraryBranchName");
+		int id = Integer.parseInt(request.getParameter("libraryBranchId"));
+		String branchAddress = request.getParameter("libraryBranchAddress");
+		LibraryBranch lb = new LibraryBranch();
+		lb.setBranchId(id);
+		lb.setBranchAddress(branchAddress);
+		lb.setBranchName(branchName);
+		AdministrativeService adminService = new AdministrativeService();
+		try {
+			adminService.updateLibrary(lb);
+			response.getWriter().write(lb.toJson());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			request.setAttribute("result",
+					"Author add failed " + e.getMessage());
+		}
+
+		// to send out the json data
+
+	}
+	
+	private void getLibrary(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		int libraryId = Integer.parseInt(request.getParameter("libraryBranchId"));
+		
+		AdministrativeService adminService = new AdministrativeService();
+		try {
+			LibraryBranch lb = adminService.getLibrary(libraryId);
+
+		    // to send out the json data
+		    response.getWriter().write(lb.toJson());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			request.setAttribute("result",
+					"Author add failed " + e.getMessage());
+		}
+	}
+	
 	
 	private void createGenre(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
@@ -296,6 +369,28 @@ public class AdminServlet extends HttpServlet {
 	}
 	
 	
+	private void editGenre(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		String genreName = request.getParameter("genreName");
+		int id = Integer.parseInt(request.getParameter("genreId"));
+		Genre g = new Genre();
+		g.setGenreName(genreName);
+		g.setGenreId(id);
+		AdministrativeService adminService = new AdministrativeService();
+		try {
+			adminService.updateGenre(g);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			request.setAttribute("result",
+					"Author add failed " + e.getMessage());
+		}
+		String jsonData = "{ \"genreId\" : \"" + g.getGenreId() +  "\", \"genreName\" : \"" + g.getGenreName() +  "\"}"; 
+		
+		// to send out the json data
+		response.getWriter().write(jsonData);
+	}
+	
 	private void editAuthor(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		String authorName = request.getParameter("authorName");
@@ -315,6 +410,35 @@ public class AdminServlet extends HttpServlet {
 		}
 		String jsonData = "{ \"authorId\" : \"" + a.getAuthorId() +  "\", \"authorName\" : \"" + a.getAuthorName() +  "\"}"; 
 		
+		// to send out the json data
+		response.getWriter().write(jsonData);
+	}
+	
+	private void updatePublisher(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		String publisherName = request.getParameter("publisherName");
+		int id = Integer.parseInt(request.getParameter("publisherId"));
+		String publisherAddress = request.getParameter("publisherAddress");
+		String publisherPhone = request.getParameter("publisherPhone");
+		Publisher p = new Publisher();
+		p.setPublisherId(id);
+		p.setPublisherName(publisherName);
+		p.setPublisherAddress(publisherAddress);
+		p.setPublisherPhone(publisherPhone);
+		AdministrativeService adminService = new AdministrativeService();
+		try {
+			adminService.updatePublisher(p);
+			request.setAttribute("result", "Author Updated Successfully");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			request.setAttribute("result",
+					"Author add failed " + e.getMessage());
+		}
+		String jsonData = "{ \"publisherId\" : \"" + p.getPublisherId() + 
+				"\", \"publisherName\" : \"" + p.getPublisherName() +
+				"\", \"publisherAddress\" : \"" + p.getPublisherAddress() + 
+				"\", \"publisherPhone\" : \"" + p.getPublisherPhone() +  "\"}";	
 		// to send out the json data
 		response.getWriter().write(jsonData);
 	}
@@ -375,16 +499,19 @@ public class AdminServlet extends HttpServlet {
 		AdministrativeService adminService = new AdministrativeService();
 		try {
 			adminService.createPublisher(p);
-			request.setAttribute("result", "Publisher added Successfully");
+			String jsonData = "{ \"publisherId\" : \"" + p.getPublisherId() + 
+					"\", \"publisherName\" : \"" + p.getPublisherName() +
+					"\", \"publisherAddress\" : \"" + p.getPublisherAddress() + 
+					"\", \"publisherPhone\" : \"" + p.getPublisherPhone() +  "\"}"; 
+			response.getWriter().write(jsonData);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			request.setAttribute("result",
 					"Publisher add failed " + e.getMessage());
 		}
-		RequestDispatcher rd = getServletContext().getRequestDispatcher(
-				"/menus/admin.jsp");
-		rd.forward(request, response);
+		
+
 	}
 	
 	private List<Author> viewAuthors(HttpServletRequest request,
@@ -417,6 +544,23 @@ public class AdminServlet extends HttpServlet {
 		}
 		
 	}
+
+	private void deletePublisher(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		String publisherId = request.getParameter("publisherId");
+		Publisher publisher = new Publisher();
+		publisher.setPublisherId(Integer.parseInt(publisherId));
+
+		try {
+			new AdministrativeService().deletePublisher(publisher);
+			response.getWriter().write("Success");
+		} catch (Exception e) {
+			e.printStackTrace();
+			request.setAttribute("result",
+					"Author Delete Failed because: " + e.getMessage());
+		}
+		
+	}
 	
 	
 	
@@ -432,6 +576,35 @@ public class AdminServlet extends HttpServlet {
 			new AdministrativeService().deleteBook(book);
 			response.getWriter().write("Success");
 			request.setAttribute("result", "Author Deleted Succesfully!");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			request.setAttribute("result",
+					"Author Delete Failed because: " + e.getMessage());
+		}
+		
+	}
+	
+	private void updateNoOfCopies(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		int bookId = Integer.parseInt(request.getParameter("bookId"));
+		int branchId = Integer.parseInt(request.getParameter("branchId"));
+		
+		Book book = new Book();
+		book.setBookId(bookId);
+		LibraryBranch branch = new LibraryBranch();
+		branch.setBranchId(branchId);
+		
+		BookCopies bc = new BookCopies();
+		bc.setBook(book);
+		bc.setBranch(branch);
+		bc.setNoOfCopies(Integer.parseInt(request.getParameter("noOfCopies")));
+
+		RequestDispatcher rd = getServletContext().getRequestDispatcher(
+				"/menus/admin.jsp");
+		try {
+			new AdministrativeService().updateNoOfCopies(bc);
+			response.getWriter().write("Success");
 
 		} catch (Exception e) {
 			e.printStackTrace();

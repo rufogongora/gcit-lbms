@@ -1,11 +1,12 @@
-	  <div class="container marketing">
+
       <!-- FOOTER -->
-      <footer>
-        <p class="pull-right"><a href="http://getbootstrap.com/examples/carousel/#">Back to top</a></p>
+      <footer class="footer">
+      	  <div class="container">
+     
         <p>© 2014 Company, Inc. · <a href="http://getbootstrap.com/examples/carousel/#">Privacy</a> · <a href="http://getbootstrap.com/examples/carousel/#">Terms</a></p>
+    	</div>
       </footer>
 
-    </div><!-- /.container -->
 
 
     <!-- Bootstrap core JavaScript
@@ -18,8 +19,12 @@
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="/LMSWeb/includes/js/ie10-viewport-bug-workaround.js"></script>
     
+    
     <script src = "/LMSWeb/includes/js/authorMenu.js"></script>
   	<script src = "/LMSWeb/includes/js/bookMenu.js"></script>
   	<script src = "/LMSWeb/includes/js/genreMenu.js"></script>
+  	<script src = "/LMSWeb/includes/js/publisherMenu.js"></script>
+
+	<script src = "/LMSWeb/includes/js/librarianMenu.js"></script>
 
 </body></html>

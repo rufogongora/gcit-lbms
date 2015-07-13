@@ -1,8 +1,4 @@
       <!-- Modal -->
-<%@page import="com.gcit.lms.domain.Book"%>
-<%@page import="com.gcit.lms.domain.Genre"%>
-<%@page import="com.gcit.lms.domain.Publisher"%>
-<%@page import="com.gcit.lms.domain.Author"%>
 
 <%
 
@@ -31,7 +27,17 @@
 			<%for(Book b: books){ %>
 			<tr class="bookRow">
 				<td><%out.print(b.getBookId()); %></td>
-				<td><%out.print(b.getTitle()); %></td>
+				<td>
+				<a tabindex="0" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="List of Authors for: <% out.print(b.getTitle()); %>" data-content="<% 
+				for(Author a : b.getAuthors()){
+					out.print(a.getAuthorName());
+					out.print("<br>");
+				}
+				
+				%>">
+				
+				<%out.print(b.getTitle()); %>
+				</a></td>
 				<td><% if (b.getPublisher() != null){
 					out.print(b.getPublisher().getPublisherName());
 				}else

@@ -2,7 +2,9 @@
 $(".deleteAuthor").bind("click", deleteAuthor);
 $(".editAuthor").bind("click", updateEditAuthorModal)
 
-
+$(function () {
+  $('[data-toggle="popover"]').popover()
+})
 $("#updateAuthor").click(function(data){
 	var authorIdvar = parseInt($("#newAuthorName").attr("authorid"));
 	var authorNamevar = $("#newAuthorName").val();
@@ -17,7 +19,8 @@ $("#updateAuthor").click(function(data){
 	$.post("/LMSWeb/updateAuthor", jsonToSend).done(function(data)
 			{
 				var editedAuthor = JSON.parse(data)
-				$("td[authorId='"+authorIdvar+"']").text(editedAuthor.authorName)
+				$("td[authorId='"+authorIdvar+"']").children().eq(0).text(editedAuthor.authorName)
+				$("td[authorId='"+authorIdvar+"']").children().eq(0).attr("data-original-title", "List of Books for: " + editedAuthor.authorName)
 				$("option[value='"+authorIdvar+"']").text(editedAuthor.authorName)
 				updateJsonInBooks(authorIdvar, editedAuthor.authorName)
 				
@@ -44,7 +47,6 @@ function updateJsonInBooks(id, newName)
 				return
 			}
 		}	
-
 	}
 	
 }
@@ -116,7 +118,8 @@ $(".addAuthor").click(
 				var rowColumnClone = $("#authorCloneMe").clone()
 				rowColumnClone.removeAttr("id")
 				rowColumnClone.children().eq(0).text(author.authorId) //authorId
-				rowColumnClone.children().eq(1).text(authorNameVar)
+				rowColumnClone.children().eq(1).children().eq(0).text(authorNameVar)
+				$('[data-toggle="popover"]').popover()
 				rowColumnClone.children().eq(1).attr("authorId",author.authorId	)
 				rowColumnClone.children().eq(2).children().eq(0).attr("authorName",authorNameVar)
 				rowColumnClone.children().eq(2).children().eq(0).attr("authorId",author.authorId)
@@ -140,3 +143,6 @@ $(".addAuthor").click(
 
 		});
 
+$("#searchAuthor").keyup(function(data){
+	console.log("hi")
+})

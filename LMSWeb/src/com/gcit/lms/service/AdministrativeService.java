@@ -1,16 +1,21 @@
 package com.gcit.lms.service;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.gcit.lms.dao.AuthorDAO;
+import com.gcit.lms.dao.BookCopiesDAO;
 import com.gcit.lms.dao.BookDAO;
 import com.gcit.lms.dao.GenreDAO;
+import com.gcit.lms.dao.LibraryBranchDAO;
 import com.gcit.lms.dao.PublisherDAO;
 import com.gcit.lms.domain.Author;
 import com.gcit.lms.domain.Book;
+import com.gcit.lms.domain.BookCopies;
 import com.gcit.lms.domain.Genre;
+import com.gcit.lms.domain.LibraryBranch;
 import com.gcit.lms.domain.Publisher;
 
 public class AdministrativeService {
@@ -58,6 +63,29 @@ public class AdministrativeService {
 		}
 		
 	}
+	
+	public void updateGenre(Genre genre) throws Exception{
+		Connection conn = ConnectionUtil.createConnection();
+		try {
+			if (genre == null || genre.getGenreName() == null
+					|| genre.getGenreName().length() == 0
+					|| genre.getGenreName().length() > 45) {
+				throw new Exception(
+						"Author Name cannot be empty or more than 45 Chars");
+			} else {
+				GenreDAO gdao = new GenreDAO(conn);
+				gdao.update(genre);
+				conn.commit();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			conn.rollback();
+		} finally {
+			conn.close();
+		}
+		
+	}
+	
 	public void createGenre(Genre genre) throws Exception{
 		Connection conn = ConnectionUtil.createConnection();
 		try {
@@ -142,6 +170,20 @@ public class AdministrativeService {
 			conn.close();
 		}
 	}
+	public void deletePublisher(Publisher publisher) throws Exception {
+		//ConnectionUtil c = new ConnectionUtil();
+		Connection conn = ConnectionUtil.createConnection();
+		PublisherDAO pdao = new PublisherDAO(conn);
+		try {
+			pdao.delete(publisher);
+			conn.commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+			conn.rollback();
+		} finally {
+			conn.close();
+		}
+	}
 	
 	public Author readAuthor(int id) throws Exception{
 		Connection conn = ConnectionUtil.createConnection();
@@ -189,6 +231,20 @@ public class AdministrativeService {
 		}
 	}
 	
+	public void updatePublisher(Publisher publisher) throws Exception{
+		Connection conn = ConnectionUtil.createConnection();
+		PublisherDAO bdao = new PublisherDAO(conn);
+		try{
+			bdao.update(publisher);
+			conn.commit();
+		}catch (Exception e){
+			e.printStackTrace();
+			conn.rollback();
+		}finally{
+			conn.close();
+		}
+	}
+	
 	public void deleteBook(Book book) throws Exception{
 		Connection conn = ConnectionUtil.createConnection();
 		BookDAO bdao = new BookDAO(conn);
@@ -208,6 +264,11 @@ public class AdministrativeService {
 		PublisherDAO pdao = new PublisherDAO(conn);
 		return pdao.readAll();
 	}
+	public List<LibraryBranch> readLibraryBranches() throws Exception{
+		Connection conn = ConnectionUtil.createConnection();
+		LibraryBranchDAO lbdao = new LibraryBranchDAO(conn);
+		return lbdao.readAll();
+	}
 	
 	public Publisher readOnePublisher(int id ) throws Exception{
 		Connection conn = ConnectionUtil.createConnection();
@@ -219,5 +280,41 @@ public class AdministrativeService {
 		Connection conn = ConnectionUtil.createConnection();
 		BookDAO bdao = new BookDAO(conn);
 		return bdao.readAll();
+	}
+	
+	public LibraryBranch getLibrary(int id) throws Exception{
+		Connection conn = ConnectionUtil.createConnection();
+		LibraryBranchDAO lbdao = new LibraryBranchDAO(conn);
+		return lbdao.readOne(id);
+	}
+
+	public void updateLibrary(LibraryBranch lb) throws Exception {
+		Connection conn = ConnectionUtil.createConnection();
+		LibraryBranchDAO lbdao = new LibraryBranchDAO(conn);
+		try{
+			lbdao.update(lb);
+			conn.commit();
+		}catch (Exception e){
+			e.printStackTrace();
+			conn.rollback();
+		}finally{
+			conn.close();
+		}
+		
+	}
+
+	public void updateNoOfCopies(BookCopies bc) throws Exception{
+		Connection conn = ConnectionUtil.createConnection();
+		BookCopiesDAO bcdao = new BookCopiesDAO(conn);
+		try{
+			bcdao.update(bc);
+			conn.commit();
+		}catch (Exception e){
+			e.printStackTrace();
+			conn.rollback();
+		}finally{
+			conn.close();
+		}
+		
 	}
 }

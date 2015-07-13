@@ -274,7 +274,7 @@ function addGenreToList(genre)
 	if (!checkIfInArrayGenre(genre))
 	{
 		genresToInsert.push(genre)
-		var copy = $("#cop	yMeRowGenre").clone()
+		var copy = $("#copyMeRowGenre").clone()
 		copy.removeAttr("id")
 		copy.attr("class", "genreRowForList")
 		copy.children().eq(0).text(genre.genreName)
