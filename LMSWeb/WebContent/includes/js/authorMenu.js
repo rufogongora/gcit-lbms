@@ -18,14 +18,61 @@ $("#updateAuthor").click(function(data){
 			{
 				var editedAuthor = JSON.parse(data)
 				$("td[authorId='"+authorIdvar+"']").text(editedAuthor.authorName)
-				
 				$("option[value='"+authorIdvar+"']").text(editedAuthor.authorName)
-
+				updateJsonInBooks(authorIdvar, editedAuthor.authorName)
 				
 			})
 	
 
 })
+
+function updateJsonInBooks(id, newName)
+{
+	var arrayOfButtons = $("button[authors]")
+
+	for (i = 0; i < arrayOfButtons.length; i++){
+		var currButton = $("button[authors]").eq(i)
+		var jsonObj = JSON.parse(currButton.attr("authors"))
+		
+		
+
+		for (j = 0; j < jsonObj.length; j++){
+			if(jsonObj[j].authorId == id)
+			{
+				jsonObj[j].authorName = newName
+				currButton.attr("authors", JSON.stringify(jsonObj))
+				return
+			}
+		}	
+
+	}
+	
+}
+
+function deleteJsonInBooks(id)
+{
+	var arrayOfButtons = $("button[authors]")
+
+	for (i = 0; i < arrayOfButtons.length; i++){
+		var currButton = $("button[authors]").eq(i)
+		var jsonObj = JSON.parse(currButton.attr("authors"))
+		
+		
+
+		for (j = 0; j < jsonObj.length; j++){
+			if(jsonObj[j].authorId == id)
+			{
+				jsonObj.splice(j, 1)
+				currButton.attr("authors", JSON.stringify(jsonObj))
+				return
+			}
+		}	
+
+	}
+	
+}
+
+
 
 function deleteAuthor()
 {
@@ -35,6 +82,9 @@ function deleteAuthor()
 	var x =  { authorId : authorIdvar}
 	$.post("/LMSWeb/deleteAuthor", x ).done(function (data){
 		thisAuthor.parent().parent().hide();
+		deleteJsonInBooks(authorIdvar)
+		$("#authorDropdown option[value='"+authorIdvar +"']").remove()
+
 	});
 }
 
@@ -42,7 +92,7 @@ function updateEditAuthorModal()
 {
 	var authorIdvar = parseInt($(this).attr("authorid"));
 	$("#newAuthorName").attr("authorId", authorIdvar)
-
+	
 }
 
 
@@ -82,6 +132,8 @@ $(".addAuthor").click(
 				newOption.text(authorNameVar)
 				$("#authorDropdown").append(newOption)
 
+			$("#authorNameInput").val("")
+				
 			}).fail(function(data){
 				console.log("fail")
 			});

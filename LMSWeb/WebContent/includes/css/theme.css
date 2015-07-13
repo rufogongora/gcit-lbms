@@ -144,3 +144,7 @@ body {
 	margin: auto;
 	margin-bottom: 20px;
 }
+
+a:focus{
+	outline : 0;
+}

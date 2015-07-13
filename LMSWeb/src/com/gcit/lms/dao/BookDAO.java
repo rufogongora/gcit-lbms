@@ -32,6 +32,26 @@ public class BookDAO extends BaseDAO<Book>{
 		book.setBookId(bookId);
 	}	
 	
+	public void update(Book book) throws Exception{
+		save("delete from tbl_book_authors WHERE bookId = ?", new Object[] { book.getBookId() });
+		save("delete from tbl_book_genres WHERE bookId = ?", new Object[] { book.getBookId() });
+		
+		save("update tbl_book set title = ?, pubId = ? WHERE bookId = ?",
+				new Object[] { book.getTitle(), book.getPublisher().getPublisherId(), book.getBookId()});
+		
+		
+		for(Author a: book.getAuthors()){
+			save("insert into tbl_book_authors (bookId, authorId) values (?,?)", 
+				new Object[]{book.getBookId(), a.getAuthorId()});
+		}
+		
+		for(Genre g: book.getGenres()){
+			save("insert into tbl_book_genres (bookId, genre_id) values (?,?)", 
+				new Object[]{book.getBookId(), g.getGenreId()});
+		}
+		
+	}
+	
 	public void delete(Book book) throws Exception {
 		save("delete from tbl_book where bookId = ?",
 				new Object[] { book.getBookId() });

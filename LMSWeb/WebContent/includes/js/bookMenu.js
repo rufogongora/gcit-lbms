@@ -6,6 +6,8 @@ $(".closeModal").click(function(data){
 $(".editBook").bind("click", editBook)
 $(".deleteBook").bind("click", deleteBook)
 
+var status;
+
 function deleteBook()
 {
 	var bn = $(this)
@@ -24,40 +26,82 @@ function closeAddBookModal()
 	restartAddingAuthors()
 	restartAddingGenres()
 	$("#bookTitleInput").val("")
+	$("#bookTitleInput").removeAttr("bookId")
 	$(".authorRowForList").remove()
 	$(".genreRowForList").remove()
 }
 
 
 $(".addBook").click(
+
+
 		function (data){
-			
-			if (!validateAddingBook())
-				return
-				
-			var bookTitlevar = $("#bookTitleInput").val()
-			var publisherIdvar = $("#publisherDropdown").val()
-			var jsonToSend =  { bookTitle : bookTitlevar, 
-				authors : JSON.stringify(authorsToInsert),
-				genres : JSON.stringify(genresToInsert),
-				publisherId : publisherIdvar}
-			$.post("/LMSWeb/addBook", jsonToSend).done(function(data)
+			if (status == "addBook"){
+				//ADD A NEW BOOK
+				if (!validateAddingBook())
+					return
+
+					var bookTitlevar = $("#bookTitleInput").val()
+					var publisherIdvar = $("#publisherDropdown").val()
+					var jsonToSend =  { 
+						bookTitle : bookTitlevar,
+						authors : JSON.stringify(authorsToInsert),
+						genres : JSON.stringify(genresToInsert),
+						publisherId : publisherIdvar}
+				$.post("/LMSWeb/addBook", jsonToSend).done(function(data)
+						{
+
+					if (data)
+					{
+
+						$("#addBookModal").modal("toggle")
+						$(".successMessageBook").show();
+						$(".successMessageBook").text("Book added succesfully")
+						$(".successMessageBook").fadeOut(2600, "linear")
+						var addedBook = JSON.parse(data)
+						addedBook.authors = JSON.stringify(authorsToInsert)
+						addedBook.genres = JSON.stringify(genresToInsert)
+						addBookToDOM(addedBook)
+						closeAddBookModal()
+					}
+				})
+			}
+			else
 			{
+				if (!validateAddingBook())
+					return;
 				
+				var bookIdvar = $("#bookTitleInput").attr("bookId")
+				var bookTitlevar = $("#bookTitleInput").val()
+				var publisherIdvar = $("#publisherDropdown").val()
+				var jsonToSend =  { bookTitle : bookTitlevar, 
+					bookId : bookIdvar,
+					authors : JSON.stringify(authorsToInsert),
+					genres : JSON.stringify(genresToInsert),
+					publisherId : publisherIdvar}
+			$.post("/LMSWeb/editBook", jsonToSend).done(function(data)
+					{
+
 				if (data)
 				{
 					$("#addBookModal").modal("toggle")
-					
+
 					$(".successMessageBook").show();
-					$(".successMessageBook").text("Book added succesfully")
+					$(".successMessageBook").text("Book updated succesfully")
 					$(".successMessageBook").fadeOut(2600, "linear")
 					var addedBook = JSON.parse(data)
-					addBookToDOM(addedBook)
+					$("button[bookId='" + bookIdvar +"']").parent().parent().children().eq(1).text(bookTitlevar)
+					$("button[bookId='"+ bookIdvar +"']").parent().parent().children().eq(2).text(addedBook.publisherName)
 					closeAddBookModal()
+					
 				}
-			})
+					})
+				
+				
+			}
+			
 		})
-		
+
 
 		
 $("#authorDropdown").change(function(data){
@@ -71,13 +115,19 @@ $("#genreDropdown").change(function(data){
 	addGenreToList(genre)
 
 })
-
+$("#addBookButton").click(function(data){
+		status = "addBook"
+		$("#addBookLabel").text("Add Book")
+})
 function editBook()
 {
+	status = "editBook"
 	authorsToInsert = [];
 	var bookName = $(this).parent().parent().children().eq(1).text();
 	var bookId = parseInt($(this).attr("bookId"))
 	$("#bookTitleInput").val(bookName)
+	$("#bookTitleInput").attr("bookId", bookId)
+	$("#addBookLabel").text("Edit book : " + bookName)
 	var authors = JSON.parse($(this).attr("authors"))
 	console.log(authors)
 	for( i = 0; i < authors.length; i++){
@@ -192,8 +242,11 @@ function addBookToDOM(addedBook)
 	clone.children().eq(1).text(addedBook.bookTitle)
 	clone.children().eq(2).text(addedBook.publisherName)
 	clone.children().eq(3).children().eq(0).attr("bookId", addedBook.bookId)
+	clone.children().eq(3).children().eq(0).attr("authors", addedBook.authors)
+	clone.children().eq(3).children().eq(0).attr("genres", addedBook.genres)
 	clone.children().eq(4).children().eq(0).attr("bookId", addedBook.bookId)
 	clone.children().eq(4).children().eq(0).bind("click", deleteBook)
+	clone.children().eq(3).children().eq(0).bind("click", editBook)
 	clone.show()
 	$("#bookTable").append(clone)
 }
@@ -221,7 +274,7 @@ function addGenreToList(genre)
 	if (!checkIfInArrayGenre(genre))
 	{
 		genresToInsert.push(genre)
-		var copy = $("#copyMeRowGenre").clone()
+		var copy = $("#cop	yMeRowGenre").clone()
 		copy.removeAttr("id")
 		copy.attr("class", "genreRowForList")
 		copy.children().eq(0).text(genre.genreName)

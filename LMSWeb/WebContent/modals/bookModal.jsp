@@ -25,8 +25,8 @@
 				<th>Book ID</th>
 				<th>Title</th>
 				<th>Publisher</th>
-				<th>Edit Author</th>
-				<th>Delete Author</th>
+				<th>Edit Book</th>
+				<th>Delete Book</th>
 			</tr>
 			<%for(Book b: books){ %>
 			<tr class="bookRow">
@@ -41,30 +41,30 @@
 				<td><button type="button" data-toggle="modal" data-target="#addBookModal"
 				
 				authors = "[<% int i =0; for (Author a : b.getAuthors()){ 
-						%>{ &quot;authorName&quot; : &quot;<%
-						out.print(a.getAuthorName());
-						%>&quot; , &quot;authorId&quot; : &quot;<%
+						%>{ &quot;authorId&quot; : &quot;<%
 						out.print(a.getAuthorId());
+						%>&quot; , &quot;authorName&quot; : &quot;<%
+						out.print(a.getAuthorName());
 						%>&quot;}<% i++; if (i!=b.getAuthors().size()){ out.print(",");} }%>]"
 
 				genres = "[<% i =0;
 						if (b.getGenres() != null){
 						for (Genre g : b.getGenres()){ 
-						%>{ &quot;genreName&quot; : &quot;<%
-						out.print(g.getGenreName());
-						%>&quot; , &quot;genreId&quot; : &quot;<%
+						%>{ &quot;genreId&quot; : &quot;<%
 						out.print(g.getGenreId());
+						%>&quot; , &quot;genreName&quot; : &quot;<%
+						out.print(g.getGenreName());
 						%>&quot;}<% i++; if (i!=b.getGenres().size()){ out.print(",");}} }%>]"		
 
 						 class="btn btn-md btn-success editBook" bookId = "<%out.print(b.getBookId()); %>">Edit</button></td>
-				<td><button type="button" data-toggle="modal" data-target="#addBookModal" class="btn btn-md btn-danger deleteBook" bookId = "<%out.print(b.getBookId()); %>">Delete</button></td>
+				<td><button type="button" class="btn btn-md btn-danger deleteBook" bookId = "<%out.print(b.getBookId()); %>">Delete</button></td>
 			</tr>
 			<%} %>
 			<tr id="cloneBookRow" style="display:none">
 				<td>book id</td>
 				<td>title</td>
 				<td>publisher</td>
-				<td><button type="button" class="btn btn-md btn-success editBook" bookId="1">Edit</button></td>
+				<td><button type="button" data-toggle="modal" data-target="#addBookModal" class="btn btn-md btn-success editBook" bookId="1" authors="0">Edit</button></td>
 				<td><button type="button" class="btn btn-md btn-danger deleteBook" bookId = "1">Delete</button></td>
 			</tr>
 		</table>
@@ -73,7 +73,7 @@
 	
 			<h2>Click to add a Book</h2>
 			<p>
-		        <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#addBookModal">Add</button>
+		        <button type="submit" id="addBookButton" class="btn btn-primary" data-toggle="modal" data-target="#addBookModal">Add</button>
 		        <span class = "successMessageBook" style="color:green"></span>
 			</p>
 

@@ -50,7 +50,7 @@ class Wrapper{
 /**
  * Servlet implementation class AdminServlet
  */
-@WebServlet({ "/addAuthor", "/addPublisher", "/addBook", "/updateAuthor", "/viewAuthors", "/deleteBook",  "/deleteAuthor"})
+@WebServlet({ "/addAuthor", "/addGenre", "/deleteGenre","/addPublisher", "/addBook", "/editBook", "/updateAuthor", "/viewAuthors", "/deleteBook",  "/deleteAuthor"})
 public class AdminServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -103,6 +103,15 @@ public class AdminServlet extends HttpServlet {
 		case "/deleteBook":
 			deleteBook(request, response);
 			break;
+		case "/editBook":
+			updateBook(request, response);
+			break;
+		case "/addGenre":
+			createGenre(request, response);
+			break;
+		case "/deleteGenre":
+			deleteGenre(request, response);
+		break;
 		default:
 			break;
 		}
@@ -147,6 +156,47 @@ public class AdminServlet extends HttpServlet {
 
 		    // to send out the json data
 		    response.getWriter().write(jsonData);
+	}
+	
+	private void createGenre(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		String genreName = request.getParameter("genreName");
+		Genre g = new Genre();
+		g.setGenreName(genreName);
+		AdministrativeService adminService = new AdministrativeService();
+		try {
+			adminService.createGenre(g);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			request.setAttribute("result",
+					"Author add failed " + e.getMessage());
+		}
+		  String jsonData = "{ \"genreId\" : \"" + g.getGenreId() +  "\"}"; 
+
+		    // to send out the json data
+		    response.getWriter().write(jsonData);
+	}
+	
+	private void deleteGenre(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		String genreId = request.getParameter("genreId");
+		Genre genre = new Genre();
+		System.out.println(genreId);
+		genre.setGenreId(Integer.parseInt(genreId));
+
+		RequestDispatcher rd = getServletContext().getRequestDispatcher(
+				"/menus/admin.jsp");
+		try {
+			new AdministrativeService().deleteGenre(genre);
+			response.getWriter().write("Success");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			request.setAttribute("result",
+					"Author Delete Failed because: " + e.getMessage());
+		}
+		
 	}
 
 	private void createBook(HttpServletRequest request,
@@ -269,7 +319,49 @@ public class AdminServlet extends HttpServlet {
 		response.getWriter().write(jsonData);
 	}
 
+	private void updateBook(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException{
+		
+
+		String bookName = request.getParameter("bookTitle");
 	
+
+		int bookId = Integer.parseInt(request.getParameter("bookId"));
+
+		Book b = new Book();
+		b.setTitle(bookName);
+		b.setBookId(bookId);
+		String authorsString = request.getParameter("authors");
+		String genresString = request.getParameter("genres");
+		String publisherId = request.getParameter("publisherId");
+		AdministrativeService adminService = new AdministrativeService();
+
+		try {
+
+			b.setAuthors(parseJson(authorsString));
+			b.setGenres(parseJsonGenre(genresString));
+			if (Integer.parseInt(publisherId) >= 0 )
+			{
+				Publisher p = adminService.readOnePublisher(Integer.parseInt(publisherId));
+				b.setPublisher(p);
+			}else
+			{
+				b.setPublisher(new Publisher());
+				b.getPublisher().setPublisherName("No publisher");
+			}
+			adminService.updateBook(b);
+			//json to answer back
+			String jsonData = "{ \"bookId\" : \"" + b.getBookId() +
+					"\", \"publisherName\" : \"" + b.getPublisher().getPublisherName() +  "\", \"bookTitle\" : \"" + b.getTitle() + "\" }";
+			
+			response.getWriter().write(jsonData);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			request.setAttribute("result",
+					"Author add failed " + e.getMessage());
+		}
+	}
 
 	private void createPublisher(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
@@ -349,27 +441,6 @@ public class AdminServlet extends HttpServlet {
 		
 	}
 	
-	/*
-	private void createBook(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		String bookTitle = request.getParameter("bookTitle");
-		Book b = new Book();
-		b.setTitle(bookTitle);
-		b.setau
-		AdministrativeService adminService = new AdministrativeService();
-		try {
-			adminService.createAuthor(a);
-			request.setAttribute("result", "Author Added Successfully");
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			request.setAttribute("result",
-					"Author add failed " + e.getMessage());
-		}
-		RequestDispatcher rd = getServletContext().getRequestDispatcher(
-				"/menus/admin.jsp");
-		rd.forward(request, response);
-	}*/
-	
+
 
 }

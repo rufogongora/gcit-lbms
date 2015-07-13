@@ -29,8 +29,10 @@
          
          </div><!-- /.col-lg-4 -->
         <div class="col-lg-4">
+               <a href="#" data-toggle="modal" data-target="#genreModal" >
           <img class="img-circle" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" width="140" height="140">
-          <h2>Heading</h2>
+        	</a>
+          <h2>Genre Menu</h2>
 	      </div><!-- /.col-lg-4 -->
       </div><!-- /.row -->
       </div>

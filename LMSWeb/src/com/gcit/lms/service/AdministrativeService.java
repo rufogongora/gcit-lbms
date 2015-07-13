@@ -58,7 +58,42 @@ public class AdministrativeService {
 		}
 		
 	}
-
+	public void createGenre(Genre genre) throws Exception{
+		Connection conn = ConnectionUtil.createConnection();
+		try {
+			if (genre == null || genre.getGenreName() == null
+					|| genre.getGenreName().length() == 0
+					|| genre.getGenreName().length() > 45) {
+				throw new Exception(
+						"Author Name cannot be empty or more than 45 Chars");
+			} else {
+				GenreDAO adao = new GenreDAO(conn);
+				adao.create(genre);
+				conn.commit();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			conn.rollback();
+		} finally {
+			conn.close();
+		}
+	}
+	
+	public void deleteGenre(Genre genre) throws Exception {
+		Connection conn = ConnectionUtil.createConnection();
+		GenreDAO gdao = new GenreDAO(conn);
+		try {
+			gdao.delete(genre);
+			conn.commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+			conn.rollback();
+		} finally {
+			conn.close();
+		}
+	}
+	
+	
 	public void createPublisher(Publisher publisher) throws Exception {
 		//ConnectionUtil c = new ConnectionUtil();
 		Connection conn = ConnectionUtil.createConnection();
@@ -140,6 +175,19 @@ public class AdministrativeService {
 		}
 	}
 
+	public void updateBook(Book book) throws Exception{
+		Connection conn = ConnectionUtil.createConnection();
+		BookDAO bdao = new BookDAO(conn);
+		try{
+			bdao.update(book);
+			conn.commit();
+		}catch (Exception e){
+			e.printStackTrace();
+			conn.rollback();
+		}finally{
+			conn.close();
+		}
+	}
 	
 	public void deleteBook(Book book) throws Exception{
 		Connection conn = ConnectionUtil.createConnection();

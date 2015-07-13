@@ -20,5 +20,6 @@
     
     <script src = "/LMSWeb/includes/js/authorMenu.js"></script>
   	<script src = "/LMSWeb/includes/js/bookMenu.js"></script>
+  	<script src = "/LMSWeb/includes/js/genreMenu.js"></script>
 
 </body></html>
