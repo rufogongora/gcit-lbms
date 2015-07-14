@@ -1,10 +1,135 @@
+var allBooks = []
+var allBooksCopy = []
+var currPageBook = 1
+
+$( document ).ready(function() {
+
+	getAllBooks()
+});
+
+
+function getAllBooks(){
+	$.get("/LMSWeb/getBooks", {pageNo : -1}).done(function(data){
+		
+		var books = JSON.parse(data);
+		console.log(books)
+		allBooks = books
+		allBooksCopy = books
+		spawnBooks(books, 1)
+		spawnPaginationButtonsBook(allBooks)
+	})
+}
+
+function spawnBooks(books, page){
+	
+	$(".cloneRowBook").remove()
+	$(".originalStartBook").attr("id", "insertAfterMeBook")
+	start = (page-1)*elementsPerPage;
+	if(start>0){
+		
+		for(i = start; i < books.length && i < (start + elementsPerPage); i++){
+			addBookToDOM(books[i])
+		}
+		
+	}else{
+		for(i = 0; i < elementsPerPage && i < books.length; i++){
+			addBookToDOM(books[i])
+		}
+	}
+	$('[data-toggle="popover"]').popover()	
+}
+
+
+function addBookToDOM(addedBook)
+{
+	
+	var clone = $("#cloneBookRow").clone()
+	clone.removeAttr("id")
+	clone.addClass("cloneRowBook")
+	clone.children().eq(0).text(addedBook.bookId)
+	clone.children().eq(1).children().eq(0).text(addedBook.title)
+	clone.children().eq(2).text(addedBook.publisher.publisherName)
+	clone.children().eq(3).children().eq(0).attr("bookId", addedBook.bookId)
+	clone.children().eq(3).children().eq(0).attr("authors", JSON.stringify(addedBook.authors))
+	clone.children().eq(3).children().eq(0).attr("genres", JSON.stringify(addedBook.genres))
+	clone.children().eq(4).children().eq(0).attr("bookId", addedBook.bookId)
+	clone.children().eq(4).children().eq(0).bind("click", deleteBook)
+	clone.children().eq(3).children().eq(0).bind("click", editBook)
+	addPopoverInformationBook(addedBook, clone)
+	clone.show()
+	$("#bookTable").append(clone)
+
+	//add the option to the selector
+/*	var newOption = $("<option>")
+	newOption.attr("value", author.authorId)
+	newOption.text(author.authorName)
+	$("#authorDropdown").append(newOption)
+
+	$("#authorNameInput").val("")*/
+}
+
+function spawnPaginationButtonsBook(books){
+	$(".paginationCloneBook").remove()
+	for (j = 0; j < Math.ceil(books.length/elementsPerPage); j++){
+		var clone = $("#copyMePaginationBook").clone()
+		clone.addClass("paginationCloneBook")
+		clone.removeAttr("id")
+		clone.children().text(j+1)
+		clone.children().attr("pagNo", j+1)
+		clone.children().bind("click", changePageBook)
+		$("#insertAfterMeBook").after(clone)
+		$("#insertAfterMeBook").removeAttr("id")
+		clone.attr("id", "insertAfterMeBook")
+		clone.show()
+	}
+}
+
+function changePageBook(){
+	currPageBook = parseInt($(this).attr("pagNo"))
+	changeToPageBook(currPageBook)
+}
+
+function changeToPageBook(pageNumber){
+	if(pageNumber > Math.ceil(allBooks.length/elementsPerPage))
+		pageNumber = Math.ceil(allBooks.length/elementsPerPage)
+	spawnBooks(allBooks, pageNumber)
+}
+
+function addPopoverInformationBook(book, rowColumnClone){
+	rowColumnClone.children().eq(1).children().eq(0).attr("title", "List of Authors for: " + book.title)
+	booksString = "";
+	for(j = 0; j < book.authors.length; j++){
+		booksString += book.authors[j].authorName
+		booksString += "<br>"
+	}
+	booksString += "<h4> List of Genre(s) </h4>"
+	for (j = 0; j < book.genres.length; j++){
+		booksString += book.genres[j].genreName
+	}
+	rowColumnClone.children().eq(1).children().eq(0).attr("data-content", booksString)
+}
+
+$("#searchBook").keyup(function(data){
+	searchString = $("#searchBook").val()
+	if (searchString)
+	{
+		allBooks = $.grep(allBooksCopy, function (e) {
+			return e.title.toLowerCase().indexOf(searchString.toLowerCase()) == 0;
+		});
+	
+		changeToPageBook(1)
+		spawnPaginationButtonsBook(allBooks)
+	}
+	else{
+		getAllBooks()
+	}
+})
+
 var authorsToInsert = [];
 var genresToInsert = [];
 $(".closeModal").click(function(data){
 	closeAddBookModal()
 })
-$(".editBook").bind("click", editBook)
-$(".deleteBook").bind("click", deleteBook)
 
 var status;
 
@@ -59,9 +184,9 @@ $(".addBook").click(
 						$(".successMessageBook").text("Book added succesfully")
 						$(".successMessageBook").fadeOut(2600, "linear")
 						var addedBook = JSON.parse(data)
-						addedBook.authors = JSON.stringify(authorsToInsert)
-						addedBook.genres = JSON.stringify(genresToInsert)
-						addBookToDOM(addedBook)
+						allBooks.push(addedBook)
+						changeToPageBook(Math.ceil(allBooks.length/elementsPerPage))
+						spawnPaginationButtonsBook(allBooks)
 						closeAddBookModal()
 					}
 				})
@@ -234,7 +359,7 @@ function validateAddingBook()
 	return true
 }
 
-function addBookToDOM(addedBook)
+/*function addBookToDOM(addedBook)
 {
 	var clone = $("#cloneBookRow").clone()
 	clone.removeAttr("id")
@@ -250,7 +375,7 @@ function addBookToDOM(addedBook)
 	clone.show()
 	$("#bookTable").append(clone)
 }
-
+*/
 function addAuthorToList(author)
 {
 	//if not in array insert

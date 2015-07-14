@@ -281,6 +281,7 @@ public class AdministrativeService {
 		BookDAO bdao = new BookDAO(conn);
 		return bdao.readAll();
 	}
+
 	
 	public LibraryBranch getLibrary(int id) throws Exception{
 		Connection conn = ConnectionUtil.createConnection();

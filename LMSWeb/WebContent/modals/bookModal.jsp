@@ -15,7 +15,13 @@
         <h4 class="modal-title" id="myModalLabel2">Book Menu</h4>
       </div>
       <div class="modal-body">
-		<table class="table" id="bookTable">
+				<div class="form-group">
+					<label for="searchBook">Search Book</label> <input type="text"
+						class="form-control" id="searchBook"
+						placeholder="Enter your author name ...">
+				</div>
+
+				<table class="table" id="bookTable">
 
 			<tr>
 				<th>Book ID</th>
@@ -24,7 +30,7 @@
 				<th>Edit Book</th>
 				<th>Delete Book</th>
 			</tr>
-			<%for(Book b: books){ %>
+<%-- 			<%for(Book b: books){ %>
 			<tr class="bookRow">
 				<td><%out.print(b.getBookId()); %></td>
 				<td>
@@ -69,19 +75,30 @@
 						 class="btn btn-md btn-success editBook" bookId = "<%out.print(b.getBookId()); %>">Edit</button></td>
 				<td><button type="button" class="btn btn-md btn-danger deleteBook" bookId = "<%out.print(b.getBookId()); %>">Delete</button></td>
 			</tr>
-			<%} %>
+			<%} %> --%>
 			<tr id="cloneBookRow" style="display:none">
 				<td>book id</td>
-				<td>title</td>
+				<td><a tabindex="0" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="List of Books for: " data-content="a">title</a></td>
 				<td>publisher</td>
 				<td><button type="button" data-toggle="modal" data-target="#addBookModal" class="btn btn-md btn-success editBook" bookId="1" authors="0">Edit</button></td>
 				<td><button type="button" class="btn btn-md btn-danger deleteBook" bookId = "1">Delete</button></td>
 			</tr>
 		</table>
-			
-	
-	
-			<h2>Click to add a Book</h2>
+				<nav>
+					<ul class="pagination">
+						<li id="insertAfterMeBook" class="originalStartBook"><a href="#"
+							aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
+						</a></li>
+						<li id="copyMePaginationBook" style="display: none"><a href="#"
+							pagNo="0">1</a></li>
+						<li><a href="#" aria-label="Next"> <span
+								aria-hidden="true">&raquo;</span>
+						</a></li>
+					</ul>
+				</nav>
+
+
+				<h2>Click to add a Book</h2>
 			<p>
 		        <button type="submit" id="addBookButton" class="btn btn-primary" data-toggle="modal" data-target="#addBookModal">Add</button>
 		        <span class = "successMessageBook" style="color:green"></span>

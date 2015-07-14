@@ -56,7 +56,7 @@ class Wrapper{
 /**
  * Servlet implementation class AdminServlet
  */
-@WebServlet({ "/addAuthor", "/getGenres","/getAuthors" ,"/updateNoOfCopies", "/getLibrary", "/updatePublisher", "/deletePublisher", "/updateGenre",
+@WebServlet({ "/addAuthor", "/getBooks","/getGenres","/getAuthors" ,"/updateNoOfCopies", "/getLibrary", "/updatePublisher", "/deletePublisher", "/updateGenre",
 	"/addGenre", "/deleteGenre","/addPublisher", "/updateLibrary","/addBook", "/editBook",
 	"/updateAuthor", "/viewAuthors", "/deleteBook",  "/deleteAuthor"})
 public class AdminServlet extends HttpServlet {
@@ -88,6 +88,9 @@ public class AdminServlet extends HttpServlet {
 			break;
 		case "/getGenres":
 			getGenres(request, response);
+			break;
+		case "/getBooks":
+			getBooks(request, response);
 			break;
 		
 		}
@@ -260,6 +263,25 @@ public class AdminServlet extends HttpServlet {
 		}
 	}
 	
+	private void getBooks(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		int pageNo = Integer.parseInt(request.getParameter("pageNo"));
+		
+		AdministrativeService adminService = new AdministrativeService();
+		try {
+			List<Book> books = adminService.readBooks();
+			Gson gson = new Gson();
+		    // to send out the json data
+		    response.getWriter().write(gson.toJson(books));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			request.setAttribute("result",
+					"Author add failed " + e.getMessage());
+		}
+	}
+		
+	
 	private void getGenres(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		int pageNo = Integer.parseInt(request.getParameter("pageNo"));
@@ -350,10 +372,10 @@ public class AdminServlet extends HttpServlet {
 			request.setAttribute("result", "Author Added Successfully");
 			
 			//json to answer back
-			String jsonData = "{ \"bookId\" : \"" + b.getBookId() +
-					"\", \"publisherName\" : \"" + b.getPublisher().getPublisherName() +  "\", \"bookTitle\" : \"" + b.getTitle() + "\" }";
+
+			Gson gson = new Gson();
 			
-			response.getWriter().write(jsonData);
+			response.getWriter().write(gson.toJson(b));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -526,11 +548,8 @@ public class AdminServlet extends HttpServlet {
 				b.getPublisher().setPublisherName("No publisher");
 			}
 			adminService.updateBook(b);
-			//json to answer back
-			String jsonData = "{ \"bookId\" : \"" + b.getBookId() +
-					"\", \"publisherName\" : \"" + b.getPublisher().getPublisherName() +  "\", \"bookTitle\" : \"" + b.getTitle() + "\" }";
-			
-			response.getWriter().write(jsonData);
+			Gson gson = new Gson();
+			response.getWriter().write(gson.toJson(b));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
