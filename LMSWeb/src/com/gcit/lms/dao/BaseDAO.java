@@ -13,6 +13,9 @@ import com.gcit.lms.domain.Author;
 
 public abstract class BaseDAO<T> {
 	
+	private int pageNo = -1;
+	private int pageSize = 5;
+	
 	private Connection connection = null;
 	
 	public BaseDAO(Connection conn) throws Exception{
@@ -58,6 +61,15 @@ public abstract class BaseDAO<T> {
 	public List<?> read(String query, Object[] vals) throws Exception{
 		List<T> objects = new ArrayList<T>();
 		Connection conn = getConnection();
+		int pageNo = getPageNo();
+		if(getPageNo()>-1){
+			int start = (pageNo-1)*10;
+			if(start>0){
+				query = query + " LIMIT "+getPageNo()+", "+getPageSize();
+			}else{
+				query = query + " LIMIT 0, "+getPageSize();
+			}
+		}
 		PreparedStatement stmt = conn.prepareStatement(query);
 		
 		if(vals!=null){
@@ -90,4 +102,36 @@ public abstract class BaseDAO<T> {
 	}
 	
 	public abstract List<T> extractDataFirstLevel(ResultSet rs) throws Exception;
+	
+
+	/**
+	 * @return the pageNo
+	 */
+	public int getPageNo() {
+		return pageNo;
+	}
+
+
+	/**
+	 * @param pageNo the pageNo to set
+	 */
+	public void setPageNo(int pageNo) {
+		this.pageNo = pageNo;
+	}
+
+
+	/**
+	 * @return the pageSize
+	 */
+	public int getPageSize() {
+		return pageSize;
+	}
+
+
+	/**
+	 * @param pageSize the pageSize to set
+	 */
+	public void setPageSize(int pageSize) {
+		this.pageSize = pageSize;
+	}
 }

@@ -31,7 +31,6 @@
 				<th>Edit Author</th>
 				<th>Delete Author</th>
 			</tr>
-			
 			<tr id="authorCloneMe" style="display:none">
 				<td>authorId</td>
 				<td authorId="0">
@@ -44,31 +43,21 @@
 				<td><button type="button" class="btn btn-md btn-danger deleteAuthor" authorId = "authorId">Delete</button></td>
 			</tr>
 			
-			<%for(Author a: authors){ %>
-			<tr >
-				<td><%out.println(a.getAuthorId()); %></td>
-				<td authorId="<%out.print(a.getAuthorId()); %>">
-				<a tabindex="0" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="List of Books for: <% out.print(a.getAuthorName()); %>" data-content="<% 
-				for(Book b : a.getBooks()){
-					out.print(b.getTitle());
-					out.print("<br>");
-				}
-			
-				
-				%>">
-				<%out.print(a.getAuthorName()); %>
-				</a>
-				</td>
-				<td><button type="button" class="btn btn-md btn-success editAuthor" data-toggle="modal" data-target="#editAuthorModal" 
-				 authorId = "<%out.print(a.getAuthorId()); %>" authorName = "<%out.print(a.getAuthorName()); %>">Edit</button></td>
-				<td><button type="button" class="btn btn-md btn-danger deleteAuthor" authorId = "<%out.print(a.getAuthorId()); %>">Delete</button></td>
-			</tr>
-			<%}; %>
 		</table>
-			
-	
-	
-			<h2>Hello Admin - Enter Author Details</h2>
+				<nav>
+					<ul class="pagination">
+						<li id="insertAfterMe" class="originalStart"><a href="#" aria-label="Previous"> <span
+								aria-hidden="true">&laquo;</span>
+						</a></li>
+						<li id="copyMePagination" style="display:none"><a href="#" pagNo="0">1</a></li>
+						<li><a href="#" aria-label="Next"> <span
+								aria-hidden="true">&raquo;</span>
+						</a></li>
+					</ul>
+				</nav>
+
+
+				<h2>Hello Admin - Enter Author Details</h2>
 			<p>
 				Enter Author Name: <input type="text" name="authorName" id="authorNameInput"/>
 		        <button type="submit" class="btn btn-primary addAuthor">Add</button>

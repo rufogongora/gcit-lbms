@@ -1,7 +1,8 @@
 package com.gcit.lms.domain;
 
-import java.lang.reflect.Method;
 import java.util.List;
+
+import com.google.gson.Gson;
 
 public class Author {
 	private int authorId;
@@ -43,24 +44,10 @@ public class Author {
 	public void setBooks(List<Book> books) {
 		this.books = books;
 	}
-	public static void main(String[] args){
-		try{
-			String className = "com.gcit.lms.domain.Author";
-			String attrib = "authorName";
-			
-			Author a = new Author();
-			Class c = Class.forName(className);
-			Object obj = c.newInstance();
-			
-			a.setAuthorName("test");
-			Method setter = c.getMethod("set"+attrib.substring(0,1).toUpperCase()+attrib.substring(1, attrib.length()), String.class);
-			setter.invoke(obj, "test");
-			
-			System.out.println(a.getAuthorName());
-			
-		}catch (Exception e){
-			e.printStackTrace();
-		}
+	public String toJson(){
+		Gson gson = new Gson();
+		String json = gson.toJson(this);
+		return json;
 	}
 	
 	

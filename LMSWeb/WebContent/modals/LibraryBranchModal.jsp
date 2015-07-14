@@ -52,6 +52,9 @@
 			</tr>
 		</table>
 		
+<!-- 		<select class="form-control" id="selectLibrary">
+		</select> -->
+		
 	   </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

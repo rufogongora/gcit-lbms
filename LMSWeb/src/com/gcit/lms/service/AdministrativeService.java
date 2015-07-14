@@ -302,6 +302,13 @@ public class AdministrativeService {
 		}
 		
 	}
+	
+	public List<Book> getListOfMissingBooksForLibrary(int libId) throws Exception {
+		Connection conn = ConnectionUtil.createConnection();
+		BookDAO bdao = new BookDAO(conn);
+		return bdao.getListOfMissingBooksForLibrary(libId);
+		
+	}
 
 	public void updateNoOfCopies(BookCopies bc) throws Exception{
 		Connection conn = ConnectionUtil.createConnection();
@@ -316,5 +323,23 @@ public class AdministrativeService {
 			conn.close();
 		}
 		
+	}
+
+	public List<Author> getAuthors(int pageNo) throws Exception {
+		Connection conn = ConnectionUtil.createConnection();
+		AuthorDAO bdao = new AuthorDAO(conn);
+		bdao.setPageNo(pageNo);
+		
+		return bdao.readAll();
+		
+		
+	}
+
+	public List<Genre> getGenres(int pageNo) throws Exception {
+		Connection conn = ConnectionUtil.createConnection();
+		GenreDAO bdao = new GenreDAO(conn);
+		bdao.setPageNo(pageNo);
+		
+		return bdao.readAll();
 	}
 }

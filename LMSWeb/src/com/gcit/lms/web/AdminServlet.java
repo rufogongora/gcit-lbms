@@ -37,7 +37,9 @@ import javax.servlet.http.HttpServletResponse;
 
 
 
+
 import com.gcit.lms.dao.AuthorDAO;
+import com.gcit.lms.dao.BookDAO;
 import com.gcit.lms.dao.PublisherDAO;
 import com.gcit.lms.domain.Author;
 import com.gcit.lms.domain.Book;
@@ -54,7 +56,7 @@ class Wrapper{
 /**
  * Servlet implementation class AdminServlet
  */
-@WebServlet({ "/addAuthor", "/updateNoOfCopies", "/getLibrary", "/updatePublisher", "/deletePublisher", "/updateGenre",
+@WebServlet({ "/addAuthor", "/getGenres","/getAuthors" ,"/updateNoOfCopies", "/getLibrary", "/updatePublisher", "/deletePublisher", "/updateGenre",
 	"/addGenre", "/deleteGenre","/addPublisher", "/updateLibrary","/addBook", "/editBook",
 	"/updateAuthor", "/viewAuthors", "/deleteBook",  "/deleteAuthor"})
 public class AdminServlet extends HttpServlet {
@@ -80,6 +82,12 @@ public class AdminServlet extends HttpServlet {
 		switch (reqUrl) {
 		case "/getLibrary":
 			getLibrary(request, response);
+			break;
+		case "/getAuthors":
+			getAuthors(request, response);
+			break;
+		case "/getGenres":
+			getGenres(request, response);
 			break;
 		
 		}
@@ -172,20 +180,25 @@ public class AdminServlet extends HttpServlet {
 		String authorName = request.getParameter("authorName");
 		Author a = new Author();
 		a.setAuthorName(authorName);
+		a.setBooks(new ArrayList<Book>());
 		AdministrativeService adminService = new AdministrativeService();
 		try {
 			adminService.createAuthor(a);
 			request.setAttribute("result", "Author Added Successfully");
+
+		    // to send out the json data
+			Gson gson = new Gson();
+			
+		    response.getWriter().write(gson.toJson(a));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			request.setAttribute("result",
 					"Author add failed " + e.getMessage());
 		}
-		  String jsonData = "{ \"authorId\" : \"" + a.getAuthorId() +  "\"}"; 
+			
+			
 
-		    // to send out the json data
-		    response.getWriter().write(jsonData);
 	}
 	
 	private void updateLibrary(HttpServletRequest request,
@@ -229,6 +242,43 @@ public class AdminServlet extends HttpServlet {
 					"Author add failed " + e.getMessage());
 		}
 	}
+	private void getAuthors(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		int pageNo = Integer.parseInt(request.getParameter("pageNo"));
+		
+		AdministrativeService adminService = new AdministrativeService();
+		try {
+			List<Author> authors = adminService.getAuthors(pageNo);
+			Gson gson = new Gson();
+		    // to send out the json data
+		    response.getWriter().write(gson.toJson(authors));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			request.setAttribute("result",
+					"Author add failed " + e.getMessage());
+		}
+	}
+	
+	private void getGenres(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		int pageNo = Integer.parseInt(request.getParameter("pageNo"));
+		
+		AdministrativeService adminService = new AdministrativeService();
+		try {
+			List<Genre> genres = adminService.getGenres(pageNo);
+			Gson gson = new Gson();
+		    // to send out the json data
+		    response.getWriter().write(gson.toJson(genres));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			request.setAttribute("result",
+					"Author add failed " + e.getMessage());
+		}
+	}
+	
+	
 	
 	
 	private void createGenre(HttpServletRequest request,
@@ -239,16 +289,18 @@ public class AdminServlet extends HttpServlet {
 		AdministrativeService adminService = new AdministrativeService();
 		try {
 			adminService.createGenre(g);
+			Gson gson = new Gson();
+		    response.getWriter().write(gson.toJson(g));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			request.setAttribute("result",
 					"Author add failed " + e.getMessage());
 		}
-		  String jsonData = "{ \"genreId\" : \"" + g.getGenreId() +  "\"}"; 
+
 
 		    // to send out the json data
-		    response.getWriter().write(jsonData);
+
 	}
 	
 	private void deleteGenre(HttpServletRequest request,

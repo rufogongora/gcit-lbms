@@ -70,6 +70,10 @@ public class BookDAO extends BaseDAO<Book>{
 		return null;
 	}
 	
+	public List<Book> getListOfMissingBooksForLibrary(int branchId) throws Exception{
+		return (List<Book>) read ("SELECT * FROM tbl_book as tb WHERE tb.bookId NOT IN (SELECT bookId from tbl_book_copies WHERE branchId = ?)", new Object[] {branchId});
+	}
+	
 	@Override
 	public List<Book> extractData(ResultSet rs) throws Exception {
 		List<Book> books = new ArrayList<Book>();

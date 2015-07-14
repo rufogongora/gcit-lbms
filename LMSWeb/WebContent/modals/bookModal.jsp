@@ -33,7 +33,11 @@
 					out.print(a.getAuthorName());
 					out.print("<br>");
 				}
-				
+				out.print("<h4>Genre(s): </h4>");
+				for (Genre g : b.getGenres()){
+					out.print(g.getGenreName());
+					out.print("<br>");
+				}
 				%>">
 				
 				<%out.print(b.getTitle()); %>

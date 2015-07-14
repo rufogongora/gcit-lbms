@@ -1,45 +1,135 @@
-$(".addGenre").click(
-		function(data){
+var allGenres = []
+var allGenresCopy = []
+var currPageGenre = 1
+
+$( document ).ready(function() {
+
+	getAllGenres()
+});
+
+function getAllGenres(){
+	$.get("/LMSWeb/getGenres", {pageNo : -1}).done(function(data){
+		
+		var genres = JSON.parse(data);
+		allGenres = genres
+		allGenresCopy = genres
+		spawnGenres(genres, 1)
+		spawnPaginationButtonsGenre(allGenres)
+	})
+}
+function spawnPaginationButtonsGenre(genres){
+	$(".paginationCloneGenre").remove()
+	for (j = 0; j < Math.ceil(genres.length/elementsPerPage); j++){
+		var clone = $("#copyMePaginationGenre").clone()
+		clone.addClass("paginationCloneGenre")
+		clone.removeAttr("id")
+		clone.children().text(j+1)
+		clone.children().attr("pagNo", j+1)
+		clone.children().bind("click", changePageGenre)
+		$("#insertAfterMeGenre").after(clone)
+		$("#insertAfterMeGenre").removeAttr("id")
+		clone.attr("id", "insertAfterMeGenre")
+		clone.show()
+	}
+}
+
+
+function spawnGenres(genres, page){
 	
-			var genreNameVar = $("#genreNameInput").val()
+	$(".cloneRowGenre").remove()
+	$(".originalStartGenre").attr("id", "insertAfterMeGenre")
+	start = (page-1)*elementsPerPage;
+	if(start>0){
+		
+		for(i = start; i < genres.length && i < (start + elementsPerPage); i++){
+			addGenreToDOM(genres[i])
+		}
+		
+	}else{
+		for(i = 0; i < elementsPerPage && i < genres.length; i++){
+			addGenreToDOM(genres[i])
+		}
+	}
 
-			if (!genreNameVar){
-				return
-			}
-			
-			var x =  { genreName : genreNameVar}
+}
 
-			$.post("/LMSWeb/addGenre", x ).done(function (data){
+function addGenreToDOM(genre)
+{
+	
+	var rowColumnClone = $("#genreCloneMe").clone()
+	rowColumnClone.removeAttr("id")
+	rowColumnClone.addClass("cloneRowGenre")
+	rowColumnClone.children().eq(0).text(genre.genreId) //authorId
+	rowColumnClone.children().eq(1).text(genre.genreName)
+	rowColumnClone.children().eq(1).attr("genreid",genre.genreId)
+	rowColumnClone.children().eq(2).children().eq(0).attr("genreName",genre.genreName)
+	rowColumnClone.children().eq(2).children().eq(0).attr("genreid",genre.genreId)
+	rowColumnClone.children().eq(2).children().eq(0).bind("click", updateEditGenreModal)
+	rowColumnClone.children().eq(3).children().eq(0).attr("genreId",genre.genreId)
+	rowColumnClone.children().eq(3).children().eq(0).bind("click", deleteGenre)
+	$("#genreTable").append(rowColumnClone)
+	rowColumnClone.show();
 
-				var genre = JSON.parse(data)
-				var rowColumnClone = $("#genreCloneMe").clone()
-				rowColumnClone.removeAttr("id")
-				rowColumnClone.children().eq(0).text(genre.genreId) //authorId
-				rowColumnClone.children().eq(1).text(genreNameVar)
-				rowColumnClone.children().eq(1).attr("genreid",genre.genreId	)
-				rowColumnClone.children().eq(2).children().eq(0).attr("genreName",genreNameVar)
-				rowColumnClone.children().eq(2).children().eq(0).attr("genreid",genre.genreId)
-				rowColumnClone.children().eq(2).children().eq(0).bind("click", updateEditGenreModal)
-				rowColumnClone.children().eq(3).children().eq(0).attr("genreId",genre.genreId)
-				rowColumnClone.children().eq(3).children().eq(0).bind("click", deleteGenre)
-				$("#genreTable").append(rowColumnClone)
-				rowColumnClone.show();
+	//add the option to the selector
+/*	var newOption = $("<option>")
+	newOption.attr("value", author.authorId)
+	newOption.text(author.authorName)
+	$("#authorDropdown").append(newOption)
 
-				//add the option to the selector
-				var newOption = $("<option>")
-				newOption.attr("value", genre.genreId)
-				newOption.text(genreNameVar)
-				$("#genreDropdown").append(newOption)
+	$("#authorNameInput").val("")*/
+}
 
-			$("#genreNameInput").val("")
-				
-			}).fail(function(data){
-				console.log("fail")
-			});
 
+function changePageGenre(){
+	currPageGenre = parseInt($(this).attr("pagNo"))
+	changeToPageGenre(currPageGenre)
+}
+
+function changeToPageGenre(pageNumber){
+	if(pageNumber > Math.ceil(allGenres.length/elementsPerPage))
+		pageNumber = Math.ceil(allGenres.length/elementsPerPage)
+	spawnGenres(allGenres, pageNumber)
+}
+
+$("#searchGenre").keyup(function(data){
+	searchString = $("#searchGenre").val()
+	if (searchString)
+	{
+		allGenres = $.grep(allGenresCopy, function (e) {
+			return e.genreName.toLowerCase().indexOf(searchString.toLowerCase()) == 0;
 		});
-$(".deleteGenre").bind("click", deleteGenre)
-$(".editGenre").bind("click", updateEditGenreModal)
+	
+		changeToPageGenre(1)
+		spawnPaginationButtonsGenre(allGenres)
+	}
+	else{
+		getAllGenres()
+	}
+})
+
+$(".addGenre").click(function(data){
+	var genreNameVar = $("#genreNameInput").val()
+
+	if (!genreNameVar){
+		return
+	}
+	
+	var x =  { genreName : genreNameVar}
+
+	$.post("/LMSWeb/addGenre", x ).done(function (data){
+
+		var genre = JSON.parse(data)
+		allGenres.push(genre)
+		changeToPageGenre(Math.ceil(allGenres.length/elementsPerPage))
+		spawnPaginationButtonsGenre(allGenres)
+		$("#genreNameInput").val("")
+		
+	}).fail(function(data){
+		console.log("fail")
+	});
+	
+})
+
 function updateEditGenreModal()
 {
 	var genreIdvar = parseInt($(this).attr("genreid"));
@@ -53,12 +143,19 @@ function deleteGenre()
 	var genreIdvar = parseInt($(this).attr("genreid"));
 
 	var x =  { genreId : genreIdvar}
-	console.log(x.genreId)
 	$.post("/LMSWeb/deleteGenre", x ).done(function (data){
-		thisGenre.parent().parent().hide();
-		deleteJsonInBooks(x.genreId)
-		$("#genreDropdown option[value='"+x.genreId +"']").remove()
 
+		for(j= 0; j < allGenres.length; j++){
+			console.log(x.genreId)
+			console.log(allGenres[j].genreId)
+			if (x.genreId == allGenres[j].genreId){
+				allGenres.splice(j,1)
+				break
+			}
+		
+		}
+		changeToPageGenre(currPageGenre)
+		spawnPaginationButtonsGenre(allGenres)
 	});
 }
 $("#updateGenre").click(function(data){
@@ -75,10 +172,15 @@ $("#updateGenre").click(function(data){
 	$.post("/LMSWeb/updateGenre", jsonToSend).done(function(data)
 			{
 				var editedGenre = JSON.parse(data)
-				console.log(editedGenre)
-				$("td[genreid="+genreIdvar+"]").text(editedGenre.genreName)
-				$("option[value="+genreIdvar+"]").text(editedGenre.genreName)
-				updateJsonInBooksGenre(genreIdvar, editedGenre.genreName)
+				
+				for (i = 0; i < allGenres.length; i++){
+					if (editedGenre.genreId == allGenres[i].genreId)
+					{
+						allGenres[i].genreName = editedGenre.genreName
+						break
+					}
+				}
+				changeToPageGenre(currPageGenre)
 				
 			})
 	
@@ -86,46 +188,5 @@ $("#updateGenre").click(function(data){
 })
 
 
-function updateJsonInBooksGenre(id, newName)
-{
-	var arrayOfButtons = $("button[genres]")
 
-	for (i = 0; i < arrayOfButtons.length; i++){
-		var currButton = $("button[genres]").eq(i)
-		var jsonObj = JSON.parse(currButton.attr("genres"))
-		
-		
-
-		for (j = 0; j < jsonObj.length; j++){
-			if(jsonObj[j].genreId == id)
-			{
-				jsonObj[j].genreName = newName
-				currButton.attr("genres", JSON.stringify(jsonObj))
-				return
-			}
-		}	
-
-	}
-}
-
-function deleteJsonInBooksGenre(id)
-{
-	var arrayOfButtons = $("button[genre]")
-
-	for (i = 0; i < arrayOfButtons.length; i++){
-		var currButton = $("button[genre]").eq(i)
-		var jsonObj = JSON.parse(currButton.attr("genres"))
-
-		for (j = 0; j < jsonObj.length; j++){
-			if(jsonObj[j].genreId == id)
-			{
-				jsonObj.splice(j, 1)
-				currButton.attr("genre", JSON.stringify(jsonObj))
-				return
-			}
-		}	
-
-	}
-	
-}
 
