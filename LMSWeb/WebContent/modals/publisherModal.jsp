@@ -27,7 +27,7 @@
 				<td><button type="button" class="btn btn-md btn-danger deletePublisher" publisherId = "publisherId">Delete</button></td>
 			</tr>
 			
-			<%for(Publisher g: publishers){ %>
+<%-- 			<%for(Publisher g: publishers){ %>
 			<tr >
 				<td><%out.println(g.getPublisherId()); %></td>
 				<td publisherId="<%out.print(g.getPublisherId()); %>" pfield="name"><%out.print(g.getPublisherName()); %></td>
@@ -37,12 +37,23 @@
 				 publisherId = "<%out.print(g.getPublisherId()); %>" publisherName = "<%out.print(g.getPublisherName()); %>">Edit</button></td>
 				<td><button type="button" class="btn btn-md btn-danger deletePublisher" publisherId = "<%out.print(g.getPublisherId()); %>">Delete</button></td>
 			</tr>
-			<%}; %>
+			<%}; %> --%>
 		</table>
-			
-	
-	
-			<h2>Hello Admin - Enter Publisher Details</h2>
+				<nav>
+					<ul class="pagination">
+						<li id="insertAfterMePublisher" class="originalStartPublisher"><a href="#"
+							aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
+						</a></li>
+						<li id="copyMePaginationPublisher" style="display: none"><a href="#"
+							pagNo="0">1</a></li>
+						<li><a href="#" aria-label="Next"> <span
+								aria-hidden="true">&raquo;</span>
+						</a></li>
+					</ul>
+				</nav>
+
+
+				<h2>Hello Admin - Enter Publisher Details</h2>
 			<p>
 				Enter Publisher Name: <input type="text" class="form-control" name="publisherName" id="publisherNameInput"/>
 				Enter Publisher Address:  <input type="text" class="form-control" name="publisherName" id="publisherAddressInput"/>

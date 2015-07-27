@@ -1,0 +1,79 @@
+
+
+<!--  Genre Modal -->
+<div class="container something" ng-controller="genreCtrl">
+
+	<form>
+		<div class="form-group">
+			<label>Search For Genre</label> <input type="text"
+				class="form-control" ng-model="searchGenreQuery" ng-change="getGenres()" placeholder="Enter genre name...">
+		</div>
+
+	</form>
+
+
+	  <alert ng-show="searchAlert != null" type="{{searchAlert.type}}" >{{searchAlert.msg}}</alert>
+	<hr/>
+
+	
+	<table class="table">
+		<tr>
+			<th>Genre ID</th>
+			<th>Genre Name</th>
+			<th>Edit Genre</th>
+			<th>Delete Genre</th>
+		</tr>
+		<tr ng-repeat="genre in genres | orderBy : 'genreId'">
+			<td>{{genre.genreId}}</td>
+			<td genreId="{{genre.genreId}}"><a popover-template="dynamicPopover.templateUrl" ng-mouseover="dynamicPopover.genre = genre" popover-title="Books for genre {{genre.name}}" popover-trigger="mouseenter"> {{genre.name}} </a></td>
+
+			<td><button type="submit"
+					class="btn btn-md btn-success" ng-click="editGenre(genre)">Edit</button></td>
+			<td><button type="button"
+					class="btn btn-md btn-danger" ng-click="deleteGenre(genre)">Delete</button></td>
+		</tr>
+
+	</table>
+	<pagination total-items="numberOfGenres" items-per-page="numPerPage" max-size="maxSize" boundary-links="true" ng-model="currentPage" ng-change="pageChanged()" ></pagination>
+
+  <alert ng-repeat="alert in alerts" dismiss-on-timeout="1000" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
+	<hr/>
+	<form>
+		<div class="form-group">
+			<label for="name">Add genre</label> <input type="text"
+				class="form-control" id="name" ng-model="newGenre.name" placeholder="Enter genre name...">
+		</div>
+		<button type="submit" class="btn btn-primary addGenre" ng-click="addGenre()">Add</button>
+	</form>
+
+
+</div>
+
+
+<!--  edit genre modal -->
+    <script type="text/ng-template" id="myModalContent.html">
+        <div class="modal-header">
+            <h3 class="modal-title">Edit Genre: <span style="color:red"> {{genreToEdit.name}}</span></h3>
+        </div>
+        <div class="modal-body">
+		    <div class="input-group">
+		      <input type="text" class="form-control" ng-model="genreToEdit.name" placeholder="{{genreToEdit.name}}">
+		      <span class="input-group-btn">
+		        <button class="btn btn-default" type="button" ng-click="ok()">Update</button>
+		        <button class="btn btn-default" type="button" ng-click="cancel()" >Close</button>
+		        
+		      </span>
+		    </div><!-- /input-group -->
+        </div>
+    </script>
+
+
+
+    
+    <!--  popover stuff- -->
+ <script type="text/ng-template" id="myPopoverTemplate.html">
+		<div>
+        <ul ng-repeat = "book in dynamicPopover.genre.books"><li>{{book.title}}</li>
+		</ul>
+        </div>
+    </script>

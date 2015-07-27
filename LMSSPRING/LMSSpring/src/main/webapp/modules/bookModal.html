@@ -1,0 +1,150 @@
+
+
+<!--  Book Modal -->
+<div class="container something" ng-controller="bookCtrl">
+
+
+	<form class="form-inline">
+		<div class="input-group col-sm-12">
+			<input class="form-control" ng-model="searchBookQuery"
+				ng-change="getBooks()" type="text" value="" placeholder="Search"
+				name="q">
+			<div class="input-group-btn">
+				<select class="form-control" ng-model="selectedSearchChoice.id">
+					<option ng-repeat="choice in searchChoices" value="{{choice.id}}">{{choice.name}}</option>
+				</select>
+
+			</div>
+			<!-- /btn-group -->
+		</div>
+
+
+	</form>
+	<alert ng-show="searchAlert != null" type="{{searchAlert.type}}">{{searchAlert.msg}}</alert>
+	<hr />
+
+
+	<table class="table">
+		<tr>
+			<th>Book ID</th>
+			<th>Book Title</th>
+			<th>Publisher</th>
+			<th>Edit Book</th>
+			<th>Delete Book</th>
+		</tr>
+		<tr ng-repeat="book in books | orderBy : 'bookId'">
+			<td>{{book.bookId}}</td>
+			<td><a popover-template="dynamicPopover.templateUrl"
+				ng-mouseover="dynamicPopover.book = book"
+				popover-title="Book info"
+				popover-trigger="mouseenter"> {{book.title}} </a></td>
+			<td>{{book.publisher.name}}</td>
+			<td><button type="submit" class="btn btn-md btn-success"
+					ng-click="openAddBook('', book)">Edit</button></td>
+			<td><button type="button" class="btn btn-md btn-danger"
+					ng-click="deleteBook(book)">Delete</button></td>
+		</tr>
+
+	</table>
+	<pagination total-items="numberOfBooks" items-per-page="numPerPage"
+		max-size="maxSize" boundary-links="true" ng-model="currentPage"
+		ng-change="pageChanged()"></pagination>
+
+	<alert ng-repeat="alert in alerts" dismiss-on-timeout="2000"
+		type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
+	<hr />
+
+	<button type="button" class="btn btn-primary" ng-click="openAddBook()">Add Book</button>
+
+
+</div> <!-- End main book controller -->
+
+
+<!-- Add Book Modal -->
+<script type="text/ng-template" id="AddBookModalCtrl.html">
+        <div class="modal-header">
+            <h3 class="modal-title">{{msg}} Book: </h3>
+        </div>
+        <div class="modal-body">
+			<table class="table">
+			    <tr>
+   					<td>
+   					<h4>Book Title:</h4>
+   					<input class="form-control" placeholder="Enter the title..." type="text" ng-model="newBook.title" id="bookTitleInput"/>
+   					</td>       	
+   				</tr>
+   				<tr>
+   					<td>
+   					<h4>Authors: </h4>
+   						<h5>Click author to add</h5>
+				       	<select ng-model="selectedAuthor" ng-change="addAuthorToList(selectedAuthor)" ng-options="author.authorName for author in authors" class="form-control"> 
+   						</select>
+					
+
+			   	<table class="table table-hover">
+						<tr><th>Author Name: </th><th>Remove</th></tr>
+						<tr ng-repeat="author in newBook.authors">
+							<td>{{author.authorName}}</td>
+							<td>
+								<a ng-click="deleteAuthorFromList(author)">
+								<span class="glyphicon glyphicon-remove" aria-hidden="true">
+								</span>
+								</a>
+							</td>
+						</tr>
+					</table>
+   					
+	</td>
+   				</tr>
+   				<tr>
+   					<td>
+   					<h4>Genres: </h4>
+   						<h5>Click genre to add</h5>
+				       	<select ng-model="selectedGenre" ng-change="addGenreToList(selectedGenre)" ng-options="genre.name for genre in genres" class="form-control"> 
+   						</select>
+				
+	
+			   	<table class="table table-hover">
+						<tr><th>Genre Name: </th><th>Remove</th></tr>
+						<tr ng-repeat="genre in newBook.genres">
+							<td>{{genre.name}}</td>
+							<td>
+								<a ng-click="deleteGenreFromList(genre)">
+								<span class="glyphicon glyphicon-remove" aria-hidden="true">
+								</span>
+								</a>
+							</td>
+						</tr>
+					</table>
+   					
+				</td>
+   				</tr>
+				<tr>
+   					<td>
+   					<h4>Publisher: </h4>
+   						<h5>Select a publisher</h5>
+				       	<select ng-model="newBook.publisher"   ng-options="publisher.name for publisher in publishers" class="form-control"> 
+   						</select>
+					</td>
+				</tr>
+
+			</table>
+			<button type="button" class="btn btn-primary" ng-click="ok()">{{msg}}</button>
+			<button type="button" class="btn btn-danger" ng-click="cancel()">Cancel</button>
+			
+        </div>
+</script>
+
+
+
+<!--  popover stuff- -->
+<script type="text/ng-template" id="myPopoverTemplate.html">
+		<div>
+		<h4>Authors: </h4>
+        <ul ng-repeat = "author in dynamicPopover.book.authors"><li>{{author.authorName}}</li>
+		</ul>
+		<h4>Genres: </h4>
+        <ul ng-repeat = "genre in dynamicPopover.book.genres"><li>{{genre.name}}</li>
+		</ul>
+        </div>
+    </script>

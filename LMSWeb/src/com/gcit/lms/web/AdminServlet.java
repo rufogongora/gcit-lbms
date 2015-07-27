@@ -56,7 +56,7 @@ class Wrapper{
 /**
  * Servlet implementation class AdminServlet
  */
-@WebServlet({ "/addAuthor", "/getBooks","/getGenres","/getAuthors" ,"/updateNoOfCopies", "/getLibrary", "/updatePublisher", "/deletePublisher", "/updateGenre",
+@WebServlet({ "/addAuthor", "/getBooks", "/getPublishers","/getGenres","/getAuthors" ,"/updateNoOfCopies", "/getLibrary", "/updatePublisher", "/deletePublisher", "/updateGenre",
 	"/addGenre", "/deleteGenre","/addPublisher", "/updateLibrary","/addBook", "/editBook",
 	"/updateAuthor", "/viewAuthors", "/deleteBook",  "/deleteAuthor"})
 public class AdminServlet extends HttpServlet {
@@ -91,6 +91,9 @@ public class AdminServlet extends HttpServlet {
 			break;
 		case "/getBooks":
 			getBooks(request, response);
+			break;
+		case "/getPublishers":
+			getPublishers(request, response);
 			break;
 		
 		}
@@ -262,7 +265,23 @@ public class AdminServlet extends HttpServlet {
 					"Author add failed " + e.getMessage());
 		}
 	}
-	
+
+	private void getPublishers(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		
+		AdministrativeService adminService = new AdministrativeService();
+		try {
+			List<Publisher> publishers = adminService.readPublishers();
+			Gson gson = new Gson();
+		    // to send out the json data
+		    response.getWriter().write(gson.toJson(publishers));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			request.setAttribute("result",
+					"Author add failed " + e.getMessage());
+		}
+	}
 	private void getBooks(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		int pageNo = Integer.parseInt(request.getParameter("pageNo"));
@@ -475,17 +494,16 @@ public class AdminServlet extends HttpServlet {
 		AdministrativeService adminService = new AdministrativeService();
 		try {
 			adminService.updateAuthor(a);
-			request.setAttribute("result", "Author Updated Successfully");
+			Gson gson = new Gson();
+			response.getWriter().write(gson.toJson(a));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			request.setAttribute("result",
 					"Author add failed " + e.getMessage());
 		}
-		String jsonData = "{ \"authorId\" : \"" + a.getAuthorId() +  "\", \"authorName\" : \"" + a.getAuthorName() +  "\"}"; 
-		
 		// to send out the json data
-		response.getWriter().write(jsonData);
+
 	}
 	
 	private void updatePublisher(HttpServletRequest request,
@@ -570,11 +588,8 @@ public class AdminServlet extends HttpServlet {
 		AdministrativeService adminService = new AdministrativeService();
 		try {
 			adminService.createPublisher(p);
-			String jsonData = "{ \"publisherId\" : \"" + p.getPublisherId() + 
-					"\", \"publisherName\" : \"" + p.getPublisherName() +
-					"\", \"publisherAddress\" : \"" + p.getPublisherAddress() + 
-					"\", \"publisherPhone\" : \"" + p.getPublisherPhone() +  "\"}"; 
-			response.getWriter().write(jsonData);
+			Gson gson = new Gson();
+			response.getWriter().write(gson.toJson(p));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -1,0 +1,76 @@
+
+
+<!--  Author Modal -->
+<div class="container something" ng-controller="authorCtrl">
+
+	<form>
+		<div class="form-group">
+			<label>Search For Author</label> <input type="text"
+				class="form-control" ng-model="searchAuthorQuery" ng-change="getAuthors()" placeholder="Enter author name...">
+		</div>
+
+	</form>
+	<hr/>
+
+	
+	<table class="table">
+		<tr>
+			<th>Author ID</th>
+			<th>Author Name</th>
+			<th>Edit Author</th>
+			<th>Delete Author</th>
+		</tr>
+		<tr ng-repeat="author in authors | orderBy : 'authorId'">
+			<td>{{author.authorId}}</td>
+			<td authorId="{{author.authorId}}"><a popover-template="dynamicPopover.templateUrl" ng-mouseover="dynamicPopover.author = author" popover-title="Books for author {{author.authorName}}" popover-trigger="mouseenter"> {{author.authorName}} </a></td>
+
+			<td><button type="submit"
+					class="btn btn-md btn-success" ng-click="editAuthor(author)">Edit</button></td>
+			<td><button type="button"
+					class="btn btn-md btn-danger" ng-click="deleteAuthor(author)">Delete</button></td>
+		</tr>
+
+	</table>
+	<pagination total-items="numberOfAuthors" items-per-page="numPerPage" max-size="maxSize" boundary-links="true" ng-model="currentPage" ng-change="pageChanged()" ></pagination>
+
+  <alert ng-repeat="alert in alerts" dismiss-on-timeout="1000" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
+	<hr/>
+	<form>
+		<div class="form-group">
+			<label for="authorName">Add author</label> <input type="text"
+				class="form-control" id="authorName" ng-model="newAuthor.authorName" placeholder="Enter author name...">
+		</div>
+		<button type="submit" class="btn btn-primary addAuthor" ng-click="addAuthor()">Add</button>
+	</form>
+
+
+</div>
+
+
+<!--  edit author modal -->
+    <script type="text/ng-template" id="myModalContent.html">
+        <div class="modal-header">
+            <h3 class="modal-title">Edit Author: <span style="color:red"> {{authorToEdit.authorName}}</span></h3>
+        </div>
+        <div class="modal-body">
+		    <div class="input-group">
+		      <input type="text" class="form-control" ng-model="authorToEdit.authorName" placeholder="{{authorToEdit.authorName}}">
+		      <span class="input-group-btn">
+		        <button class="btn btn-default" type="button" ng-click="ok()">Update</button>
+		        <button class="btn btn-default" type="button" ng-click="cancel()" >Close</button>
+		        
+		      </span>
+		    </div><!-- /input-group -->
+        </div>
+    </script>
+
+
+
+    
+    <!--  popover stuff- -->
+ <script type="text/ng-template" id="myPopoverTemplate.html">
+		<div>
+        <ul ng-repeat = "book in dynamicPopover.author.books"><li>{{book.title}}</li>
+		</ul>
+        </div>
+    </script>

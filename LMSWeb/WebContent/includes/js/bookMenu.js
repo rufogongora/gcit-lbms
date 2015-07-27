@@ -1,6 +1,8 @@
 var allBooks = []
 var allBooksCopy = []
 var currPageBook = 1
+var allPublishers = []
+var allPublishersCopy = []
 
 $( document ).ready(function() {
 
@@ -12,7 +14,6 @@ function getAllBooks(){
 	$.get("/LMSWeb/getBooks", {pageNo : -1}).done(function(data){
 		
 		var books = JSON.parse(data);
-		console.log(books)
 		allBooks = books
 		allBooksCopy = books
 		spawnBooks(books, 1)
@@ -210,13 +211,12 @@ $(".addBook").click(
 				if (data)
 				{
 					$("#addBookModal").modal("toggle")
-
 					$(".successMessageBook").show();
 					$(".successMessageBook").text("Book updated succesfully")
 					$(".successMessageBook").fadeOut(2600, "linear")
-					var addedBook = JSON.parse(data)
-					$("button[bookId='" + bookIdvar +"']").parent().parent().children().eq(1).text(bookTitlevar)
-					$("button[bookId='"+ bookIdvar +"']").parent().parent().children().eq(2).text(addedBook.publisherName)
+					getAllBooks()
+					changeToPageBook(currPageBook)
+					spawnPaginationButtonsBook(allBooks)
 					closeAddBookModal()
 					
 				}
@@ -244,6 +244,30 @@ $("#addBookButton").click(function(data){
 		status = "addBook"
 		$("#addBookLabel").text("Add Book")
 })
+
+
+$("#addBookModal").on('shown.bs.modal', function (e) {
+	spawnAuthorsAndGenresOnModal()
+})
+
+function spawnAuthorsAndGenresOnModal(){
+	for (j = 0; j < allAuthors.length; j++){
+		var opt = $("<option>")
+		opt.attr("value", allAuthors[j].authorId)
+		opt.text(allAuthors[j].authorName)
+		$("#authorDropdown").append(opt)
+		opt.show()
+	}
+	for (j = 0; j < allGenres.length; j++){
+		var opt = $("<option>")
+		opt.attr("value", allGenres[j].genreId)
+		opt.text(allGenres[j].genreName)
+		$("#genreDropdown").append(opt)
+		opt.show()
+	}	
+	
+}
+
 function editBook()
 {
 	status = "editBook"
@@ -359,23 +383,6 @@ function validateAddingBook()
 	return true
 }
 
-/*function addBookToDOM(addedBook)
-{
-	var clone = $("#cloneBookRow").clone()
-	clone.removeAttr("id")
-	clone.children().eq(0).text(addedBook.bookId)
-	clone.children().eq(1).text(addedBook.bookTitle)
-	clone.children().eq(2).text(addedBook.publisherName)
-	clone.children().eq(3).children().eq(0).attr("bookId", addedBook.bookId)
-	clone.children().eq(3).children().eq(0).attr("authors", addedBook.authors)
-	clone.children().eq(3).children().eq(0).attr("genres", addedBook.genres)
-	clone.children().eq(4).children().eq(0).attr("bookId", addedBook.bookId)
-	clone.children().eq(4).children().eq(0).bind("click", deleteBook)
-	clone.children().eq(3).children().eq(0).bind("click", editBook)
-	clone.show()
-	$("#bookTable").append(clone)
-}
-*/
 function addAuthorToList(author)
 {
 	//if not in array insert

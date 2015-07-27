@@ -1,0 +1,54 @@
+<div class="container something" ng-controller="borrowerCtrl">
+	<div class="row" ng-show="!user">
+		<div class="col-md-3"></div>
+		<div class="col-md-6">
+			<h1>Input your Card Number</h1>
+			<form>
+				<div class="form-group">
+					<input type="text" class="form-control" ng-model="cardNo">
+				</div>
+				<button type="button" class="btn btn-success" ng-click="go()">Enter</button>
+			</form>
+
+
+		</div>
+		<div class="col-md-3"></div>
+	</div>
+	<div ng-show="user">
+		<div class="row">
+
+			<h1>Check out a book</h1>
+			<select class="form-control" ng-model="bookLoan.libraryBranch" ng-options="library.branchName for library in libraries">
+			</select>
+			<br>
+			<select class="form-control" ng-show="bookLoan.libraryBranch" ng-model="bookCopy" ng-options="bookCopy.book.title for bookCopy in bookLoan.libraryBranch.bookCopies">
+			</select>
+			<br>
+			<button type="button" ng-show="bookCopy" class="btn btn-success pull-right" ng-click="checkOut()">Check Out</button>
+		</div>
+		
+
+		<div class="row">
+
+					<h1>Return a book</h1>
+			<table class="table">
+				<tr>
+					<th>Book Title</th>
+					<th>Library </th>
+					<th>Date Out </th>
+					<th>Due </th>
+					<th> Return </th>
+				</tr>
+				<tr ng-repeat="bookLoan in user.bookLoans">
+					<td>{{bookLoan.book.title}}</td>
+					<td>{{bookLoan.libraryBranch.branchName}}</td>
+					<td>{{bookLoan.dateOut | date : 'medium'}}</td>
+					<td>{{bookLoan.dateDue | date : 'medium'}}</td>
+					<td><button type="button" class="btn btn-warning" ng-click="returnBook(bookLoan)">Return</button>
+				</tr>
+			</table>
+
+
+		</div>
+	</div>
+</div>

@@ -1,0 +1,98 @@
+
+
+<!--  LibraryBranch Modal -->
+<div class="container something" ng-controller="libraryBranchCtrl">
+
+	<!-- <form>
+		<div class="form-inline">
+			<label>Search For LibraryBranch</label> <input type="text"
+				class="form-control" ng-model="searchLibraryBranchQuery" ng-change="getLibraryBranchs()" placeholder="Enter libraryBranch name...">
+				
+		</div> -->
+		  
+		 <form class="form-inline">
+        <div class="input-group col-sm-12">
+          <input class="form-control" ng-model="searchLibraryBranchQuery" ng-change="getLibraryBranchs()" type="text" value="" placeholder="Search" name="q">
+       <div class="input-group-btn">
+       <select class="form-control" ng-model="selectedSearchChoice.id">
+       	<option ng-repeat="choice in searchChoices" value="{{choice.id}}">{{choice.name}}</option>
+       </select>
+     
+      </div><!-- /btn-group -->
+      </div>
+
+		
+	</form>
+		  <alert ng-show="searchAlert != null" type="{{searchAlert.type}}" >{{searchAlert.msg}}</alert>
+	<hr/>
+
+	
+	<table class="table">
+		<tr>
+			<th>Library Branch ID</th>
+			<th>Library Branch Name</th>
+			<th>Library Branch Address </th>
+			<th>Edit Library Branch</th>
+			<th>Delete Library 	Branch</th>
+		</tr>
+		<tr ng-repeat="libraryBranch in libraryBranchs | orderBy : 'branchId'">
+			<td>{{libraryBranch.branchId}}</td>
+			<td><a popover-template="dynamicPopover.templateUrl" ng-mouseover="dynamicPopover.libraryBranch = libraryBranch" popover-title="Books for libraryBranch {{libraryBranch.branchName}}" popover-trigger="mouseenter"> {{libraryBranch.branchName}} </a></td>
+			<td>{{libraryBranch.branchAddress}}</td>
+			<td><button type="submit"
+					class="btn btn-md btn-success" ng-click="editLibraryBranch(libraryBranch)">Edit</button></td>
+			<td><button type="button"
+					class="btn btn-md btn-danger" ng-click="deleteLibraryBranch(libraryBranch)">Delete</button></td>
+		</tr>
+
+	</table>
+	<pagination total-items="numberOfLibraryBranchs" items-per-page="numPerPage" max-size="maxSize" boundary-links="true" ng-model="currentPage" ng-change="pageChanged()" ></pagination>
+
+  <alert ng-repeat="alert in alerts" dismiss-on-timeout="2000" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
+	<hr/>
+	<form>
+		<div class="form-group">
+			<h2>Add LibraryBranch</h2>
+			<label for="libraryBranchName">LibraryBranch Name</label> 
+			<input type="text" class="form-control" id="libraryBranchName" ng-model="newLibraryBranch.branchName" placeholder="Enter Library Branch name...">
+			<label for="libraryBranchAddress">LibraryBranch Address</label> 
+			<input type="text" class="form-control" id="libraryBranchAddress" ng-model="newLibraryBranch.branchAddress" placeholder="Enter Library Branch address...">
+		</div>
+		<button type="submit" class="btn btn-primary" ng-click="addLibraryBranch()">Add</button>
+	</form>
+
+
+</div>
+
+
+<!--  edit libraryBranch modal -->
+    <script type="text/ng-template" id="EditLibraryBranchModalCtrl.html">
+        <div class="modal-header">
+            <h3 class="modal-title">Edit LibraryBranch: <span style="color:red"> {{libraryBranchToEdit.branchName}}</span></h3>
+        </div>
+        <div class="modal-body">
+			<div class = "form-group">
+			<label for="libraryBranchName">LibraryBranch Name</label> 
+			<input type="text" class="form-control" id="libraryBranchName" ng-model="libraryBranchToEdit.branchName" placeholder="Enter library branch name...">
+			<label for="libraryBranchAddress">LibraryBranch Address</label> 
+			<input type="text" class="form-control" id="libraryBranchAddress" ng-model="libraryBranchToEdit.branchAddress" placeholder="Enter library branch address...">
+			</div>
+
+		      <span class="input-group-btn">
+		        <button class="btn btn-default" type="button" ng-click="ok()">Update</button>
+		        <button class="btn btn-default" type="button" ng-click="cancel()" >Close</button>
+		        
+		      </span>
+        </div>
+    </script>
+
+
+
+    
+    <!--  popover stuff- -->
+ <script type="text/ng-template" id="myPopoverTemplate.html">
+		<div>
+        <ul ng-repeat = "book in dynamicPopover.libraryBranch.books"><li>{{book.title}}</li>
+		</ul>
+        </div>
+    </script>

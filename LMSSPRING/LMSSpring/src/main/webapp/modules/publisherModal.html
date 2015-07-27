@@ -1,0 +1,105 @@
+
+
+<!--  Publisher Modal -->
+<div class="container something" ng-controller="publisherCtrl">
+
+	<!-- <form>
+		<div class="form-inline">
+			<label>Search For Publisher</label> <input type="text"
+				class="form-control" ng-model="searchPublisherQuery" ng-change="getPublishers()" placeholder="Enter publisher name...">
+				
+		</div> -->
+		  
+		 <form class="form-inline">
+        <div class="input-group col-sm-12">
+          <input class="form-control" ng-model="searchPublisherQuery" ng-change="getPublishers()" type="text" value="" placeholder="Search" name="q">
+       <div class="input-group-btn">
+       <select class="form-control" ng-model="selectedSearchChoice.id">
+       	<option ng-repeat="choice in searchChoices" value="{{choice.id}}">{{choice.name}}</option>
+       </select>
+     
+      </div><!-- /btn-group -->
+      </div>
+
+		
+	</form>
+		  <alert ng-show="searchAlert != null" type="{{searchAlert.type}}" >{{searchAlert.msg}}</alert>
+	<hr/>
+
+	
+	<table class="table">
+		<tr>
+			<th>Publisher ID</th>
+			<th>Publisher Name</th>
+			<th>Publisher Address </th>
+			<th>Publisher Phone</th>
+			<th>Edit Publisher</th>
+			<th>Delete Publisher</th>
+		</tr>
+		<tr ng-repeat="publisher in publishers | orderBy : 'id'">
+			<td>{{publisher.id}}</td>
+			<td><a popover-template="dynamicPopover.templateUrl" ng-mouseover="dynamicPopover.publisher = publisher" popover-title="Books for publisher {{publisher.name}}" popover-trigger="mouseenter"> {{publisher.name}} </a></td>
+			<td>{{publisher.address}}</td>
+			<td>{{publisher.phoneNumber}}</td>
+			<td><button type="submit"
+					class="btn btn-md btn-success" ng-click="editPublisher(publisher)">Edit</button></td>
+			<td><button type="button"
+					class="btn btn-md btn-danger" ng-click="deletePublisher(publisher)">Delete</button></td>
+		</tr>
+
+	</table>
+	<pagination total-items="numberOfPublishers" items-per-page="numPerPage" max-size="maxSize" boundary-links="true" ng-model="currentPage" ng-change="pageChanged()" ></pagination>
+
+  <alert ng-repeat="alert in alerts" dismiss-on-timeout="2000" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
+	<hr/>
+	<form>
+		<div class="form-group">
+			<h2>Add Publisher</h2>
+			<label for="publisherName">Publisher Name</label> 
+			<input type="text" class="form-control" id="publisherName" ng-model="newPublisher.name" placeholder="Enter publisher name...">
+			<label for="publisherAddress">Publisher Address</label> 
+			<input type="text" class="form-control" id="publisherAddress" ng-model="newPublisher.address" placeholder="Enter publisher address...">
+			<label for="publisherPhone">Publisher Phone</label> 
+			<input type="text" class="form-control" id="publisherPhone" ng-model="newPublisher.phoneNumber" placeholder="Enter publisher phone...">
+
+		</div>
+		<button type="submit" class="btn btn-primary" ng-click="addPublisher()">Add</button>
+	</form>
+
+
+</div>
+
+
+<!--  edit publisher modal -->
+    <script type="text/ng-template" id="EditPublisherModalCtrl.html">
+        <div class="modal-header">
+            <h3 class="modal-title">Edit Publisher: <span style="color:red"> {{publisherToEdit.name}}</span></h3>
+        </div>
+        <div class="modal-body">
+			<div class = "form-group">
+			<label for="publisherName">Publisher Name</label> 
+			<input type="text" class="form-control" id="publisherName" ng-model="publisherToEdit.name" placeholder="Enter publisher name...">
+			<label for="publisherAddress">Publisher Address</label> 
+			<input type="text" class="form-control" id="publisherAddress" ng-model="publisherToEdit.address" placeholder="Enter publisher address...">
+			<label for="publisherPhone">Publisher Phone</label> 
+			<input type="text" class="form-control" id="publisherPhone" ng-model="publisherToEdit.phoneNumber" placeholder="Enter publisher phone...">
+			</div>
+
+		      <span class="input-group-btn">
+		        <button class="btn btn-default" type="button" ng-click="ok()">Update</button>
+		        <button class="btn btn-default" type="button" ng-click="cancel()" >Close</button>
+		        
+		      </span>
+        </div>
+    </script>
+
+
+
+    
+    <!--  popover stuff- -->
+ <script type="text/ng-template" id="myPopoverTemplate.html">
+		<div>
+        <ul ng-repeat = "book in dynamicPopover.publisher.books"><li>{{book.title}}</li>
+		</ul>
+        </div>
+    </script>

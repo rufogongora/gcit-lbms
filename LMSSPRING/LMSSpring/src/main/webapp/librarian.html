@@ -1,0 +1,83 @@
+<div class="container something" ng-controller="librarianCtrl">
+		
+
+	<div class="row">
+		<div class="col-md-3"></div>
+		<div class="col-md-6">
+			<h1 ng-show="!selectedLibrary">Select a Library</h1>
+			<form>
+				<div class="form-group">
+					<select class="form-control" ng-model="selectedLibrary" ng-options="library.branchName for library in libraries">
+					</select>
+
+				</div>
+			</form>
+
+
+		</div>
+		<div class="col-md-3"></div>
+	</div>
+	
+	
+	<div ng-show="selectedLibrary">
+
+		<div class="row">
+			<h1>
+				Selected Library: <span style="color: green">
+					{{selectedLibrary.branchName}}</span>
+			</h1>
+		</div>
+
+		<div class="row">
+			<label>Check to edit Library Branch Info: <input type="checkbox" ng-model="master"></label><br/>
+
+			<form ng-show="master">
+				<div class="form-group">
+					<label for="branchName">Library Branch Name</label> 
+					<input type="text" class="form-control" id="branchName" ng-change="changed = true" ng-model="selectedLibrary.branchName">
+				</div>
+				<div class="form-group">
+					<label for="branchAddress">Library Branch Address</label> 
+					<input type="text" class="form-control" id="branchAddress" ng-change="changed = true" ng-model="selectedLibrary.branchAddress">
+				</div>
+			</form>
+		</div>
+
+
+<!-- 		<button ng-show="changed" type="button" ng-click="updateLibrary()" ng-class="{'btn-danger': changed}" class="btn btn-success">Submit Changes</button>
+		<hr>
+		<alert ng-show="changed" type="danger">The Library info has changed, update it by pressing the submit button</alert> -->
+		<div class="row">
+			<h2>Add Book Copy: </h2>
+			<div class="form-group">
+				<label>Select a book</label>
+				<select class="form-control" ng-model="copyToAdd.book" ng-options="book.title for book in books">
+				</select>
+			</div>
+			<div class="form-group">
+				<label>Number of Copies</label>
+				<input class="form-control" type="text" ng-model="copyToAdd.noOfCopies">
+
+			</div>
+			<button type="button" class="btn btn-success" class="pull-right" ng-click="addCopiesOfBook()">Add</button>			
+			<hr>
+			<table class="table">
+				<tr>
+					<th>Book Title</th>
+					<th>Number Of Copies</th>
+				</tr>
+				<tr ng-repeat="bookCopy in selectedLibrary.bookCopies">
+					<td>{{bookCopy.book.title}}</td>
+					<td>
+					<form class="form-inline"><div class="form-group">
+					<button type="button" class="btn btn-sm" ng-click="changeValue(bookCopy.book, '-')">-</button>{{bookCopy.noOfCopies}}
+					<button type="button" class="btn btn-sm" ng-click="changeValue(bookCopy.book, '+')">+</button></div></form></td>
+				</tr>
+			</table>
+				<button ng-show="changed" type="button" ng-click="updateLibrary()" ng-class="{'btn-danger': changed}" class="btn btn-success">Submit Changes</button>
+		<hr>
+		<alert ng-show="changed" type="danger">The Library info has changed, update it by pressing the submit button</alert>
+		</div>
+	</div>
+
+</div>

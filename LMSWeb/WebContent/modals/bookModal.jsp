@@ -30,52 +30,6 @@
 				<th>Edit Book</th>
 				<th>Delete Book</th>
 			</tr>
-<%-- 			<%for(Book b: books){ %>
-			<tr class="bookRow">
-				<td><%out.print(b.getBookId()); %></td>
-				<td>
-				<a tabindex="0" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="List of Authors for: <% out.print(b.getTitle()); %>" data-content="<% 
-				for(Author a : b.getAuthors()){
-					out.print(a.getAuthorName());
-					out.print("<br>");
-				}
-				out.print("<h4>Genre(s): </h4>");
-				for (Genre g : b.getGenres()){
-					out.print(g.getGenreName());
-					out.print("<br>");
-				}
-				%>">
-				
-				<%out.print(b.getTitle()); %>
-				</a></td>
-				<td><% if (b.getPublisher() != null){
-					out.print(b.getPublisher().getPublisherName());
-				}else
-					{
-					out.print("No publisher");
-					}%></td>
-				<td><button type="button" data-toggle="modal" data-target="#addBookModal"
-				
-				authors = "[<% int i =0; for (Author a : b.getAuthors()){ 
-						%>{ &quot;authorId&quot; : &quot;<%
-						out.print(a.getAuthorId());
-						%>&quot; , &quot;authorName&quot; : &quot;<%
-						out.print(a.getAuthorName());
-						%>&quot;}<% i++; if (i!=b.getAuthors().size()){ out.print(",");} }%>]"
-
-				genres = "[<% i =0;
-						if (b.getGenres() != null){
-						for (Genre g : b.getGenres()){ 
-						%>{ &quot;genreId&quot; : &quot;<%
-						out.print(g.getGenreId());
-						%>&quot; , &quot;genreName&quot; : &quot;<%
-						out.print(g.getGenreName());
-						%>&quot;}<% i++; if (i!=b.getGenres().size()){ out.print(",");}} }%>]"		
-
-						 class="btn btn-md btn-success editBook" bookId = "<%out.print(b.getBookId()); %>">Edit</button></td>
-				<td><button type="button" class="btn btn-md btn-danger deleteBook" bookId = "<%out.print(b.getBookId()); %>">Delete</button></td>
-			</tr>
-			<%} %> --%>
 			<tr id="cloneBookRow" style="display:none">
 				<td>book id</td>
 				<td><a tabindex="0" role="button" data-toggle="popover" data-html="true" data-trigger="focus" title="List of Books for: " data-content="a">title</a></td>
@@ -134,9 +88,9 @@
        <td>	<h2>Book Author:</h2> 
        	
        	<select id = "authorDropdown" class="form-control"> 
-       		<% for (Author a : authors) {%>
+<%--        		<% for (Author a : authors) {%>
        			<option value="<%out.print(a.getAuthorId()); %>"><%out.print(a.getAuthorName()); %></option>
-       		<%} %>
+       		<%} %> --%>
        	</select>
        	</td>
        	<table class="table table-hover" id ="selectedAuthorsList" >
@@ -157,9 +111,9 @@
        <td>	<h2>Book Genre:</h2> 
        	
        	<select id = "genreDropdown" class="form-control"> 
-       		<% for (Genre g : genres) {%>
+<%--        		<% for (Genre g : genres) {%>
        			<option value="<%out.print(g.getGenreId()); %>"><%out.print(g.getGenreName()); %></option>
-       		<%} %>
+       		<%} %> --%>
        	</select>
        	</td>
        	<td>
